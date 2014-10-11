@@ -26,8 +26,15 @@
 #include <stdio.h>
 using namespace std;
 
+// defines ARRAY_SIZE macro
+#define ARRAY_SIZE(array) (sizeof((array))/sizeof((array[0])))
+
 /* * * * * * * * * * START LinkedList function definitions * * * * * * * * */
 
+void testLinkedList(int arraySize)
+{
+	
+}
 /* * * * * * * * * * END LinkedList function definitions * * * * * * * * */
 
 
@@ -198,6 +205,11 @@ void basicArrayInsertionTest(){
 	delete [] testArray;
 }
 
+void testArray(int arraySize)
+{
+
+}
+
 /* * * * * * * * * * END Array function definitions * * * * * * * * */
 
 
@@ -227,5 +239,13 @@ int main()
 	basicArrayInsertionTest();
 	// array deletion tested successfully for basic cases
 	basicArrayDeletionTest();
+
+
+	// test 10 different sizes
+	int sizesToTest[10] = {1000, 3000, 5000, 10000, 30000, 50000, 100000, 300000, 500000, 1000000};
+	for(int i=0; i<ARRAY_SIZE(sizesToTest); i++){
+		testArray(sizesToTest[i]);
+		testLinkedList(sizesToTest[i]);
+	}
 
 }
