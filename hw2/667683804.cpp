@@ -23,7 +23,8 @@
           */
 #include <iostream>   // For basic I/O
 #include <stdlib.h>
-#include <stdio.h>
+#include <stdio.h>		/* srand, rand */
+#include <time.h>       /* time */
 using namespace std;
 
 // defines ARRAY_SIZE macro
@@ -33,7 +34,7 @@ using namespace std;
 
 void testLinkedList(int arraySize)
 {
-	
+
 }
 /* * * * * * * * * * END LinkedList function definitions * * * * * * * * */
 
@@ -228,6 +229,16 @@ void printStartSequence()
 
 }
 
+// returns a random number between 0 and max. Values are pseudorandom based on time of running.
+// note: if you run the program multiple times within a second, the random values will be the same
+// because they are based on the time seed (which changes every second).
+int randomIntWithMax(int max)
+{
+  /* initialize random seed: */
+  srand (time(NULL));
+  return rand() % max;
+}
+
 /* * * * * * * * * * END misc. function definitions * * * * * * * * */
 
 
@@ -247,5 +258,8 @@ int main()
 		testArray(sizesToTest[i]);
 		testLinkedList(sizesToTest[i]);
 	}
+
+	cout << "random number: " << randomIntWithMax(sizesToTest[0]) << endl;
+	cout << "random number: " << randomIntWithMax(sizesToTest[9]) << endl;
 
 }
