@@ -1,0 +1,9 @@
+*
+
+!.gitignore
+!*hw*
+!*lab*
+!hw*/*
+!lab*/*
+
+*.out
