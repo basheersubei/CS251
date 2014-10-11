@@ -39,6 +39,17 @@ using namespace std;
 void runLinkedList(int arraySize)
 {
 
+	// allocate and prepare first
+
+	startTime = clock(); // start time
+	
+	//do stuff
+
+	// stop time, display how long it took
+	secondsElapsed = (clock() - startTime)/(double)CLOCKS_PER_SEC; // record seconds elapsed since startTime
+	cout << "linked list test time: " << secondsElapsed << " seconds" << endl;
+
+	// deallocate and free memory
 }
 /* * * * * * * * * * END LinkedList function definitions * * * * * * * * */
 
@@ -215,8 +226,28 @@ void basicArrayInsertionTest(){
 // using random index positions.
 void runArray(int arraySize)
 {
-	// usleep(1000000);
-}
+
+	// allocate memory and stuff
+	int *theArray = new int[arraySize];
+	int actualArraySize = 0; // the actual number of elements inside of array (this will grow and shrink)
+
+
+	startTime = clock(); // start time
+
+
+	// keep inserting random ints into the array
+	for(int i=0; i< arraySize; i++)
+	{
+
+	}
+
+
+	// stop time, display how long it took
+	secondsElapsed = (float)(clock() - startTime)/CLOCKS_PER_SEC; // record seconds elapsed since startTime
+	cout << "array test time: " << secondsElapsed << " seconds" << " and " << startTime << endl;
+
+	// free memory and wrap-up
+}// end runArray()
 
 /* * * * * * * * * * END Array function definitions * * * * * * * * */
 
@@ -287,15 +318,9 @@ int main()
 	int sizesToTest[10] = {1000, 3000, 5000, 10000, 30000, 50000, 100000, 300000, 500000, 1000000};
 	for(int i=0; i<ARRAY_SIZE(sizesToTest); i++){
 		
-		startTime = clock(); // start time
 		runArray(sizesToTest[i]); // run the array test
-		secondsElapsed = (float)(clock() - startTime)/CLOCKS_PER_SEC; // record seconds elapsed since startTime
-		cout << "array test time: " << secondsElapsed << " seconds" << " and " << startTime << endl;
 
-		startTime = clock(); // start time
 		runLinkedList(sizesToTest[i]); // run the linked list test
-		secondsElapsed = (clock() - startTime)/(double)CLOCKS_PER_SEC; // record seconds elapsed since startTime
-		cout << "linked list test time: " << secondsElapsed << " seconds" << endl;
 
 	}
 
