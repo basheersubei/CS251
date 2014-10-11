@@ -34,6 +34,40 @@ using namespace std;
 // defines ARRAY_SIZE macro
 #define ARRAY_SIZE(array) (sizeof((array))/sizeof((array[0])))
 
+
+
+/* * * * * * * * * * START misc. function definitions * * * * * * * * */
+
+// prints a bunch of introduction text
+void printStartSequence()
+{
+    cout << endl;
+    cout << "Author: Basheer Subei" << endl;
+    cout << "TA: Nianzu, Lab: 10 am Thursday" << endl;
+    cout << "CS 251 Fall 2014" << endl;
+    cout << "Program: #2, Comparison" << endl;
+    cout << "Built on Ubuntu 12.04, compiled using g++ v4.6.3" << endl;
+    cout << endl;
+
+}
+
+// returns a random number between 0 and max. Values are pseudorandom based on time of running.
+// note: if you run the program multiple times within a second, the random values will be the same
+// because they are based on the time seed (which changes every second).
+int randomIntWithMax(int max)
+{
+  return rand() % max;
+}
+
+int frequency_of_primes (int n) {
+  int i,j;
+  int freq=n-1;
+  for (i=2; i<=n; ++i) for (j=sqrt(i);j>1;--j) if (i%j==0) {--freq; break;}
+  return freq;
+}
+/* * * * * * * * * * END misc. function definitions * * * * * * * * */
+
+
 /* * * * * * * * * * START LinkedList function definitions * * * * * * * * */
 
 void runLinkedList(int arraySize)
@@ -41,6 +75,8 @@ void runLinkedList(int arraySize)
 
 	// allocate and prepare first
 
+	clock_t startTime;
+	float secondsElapsed;
 	startTime = clock(); // start time
 	
 	//do stuff
@@ -132,7 +168,7 @@ void displayArray( int theArray[], int start, int end)
 }
 
 
-// runs basic tests on insertInOrderArray(). Prints stuff out.
+// runs basic tests on deleteFromArray(). Prints stuff out.
 void basicArrayDeletionTest(){
 	int testMaxSize = 5;
 	int *testArray = new int[testMaxSize];
@@ -231,63 +267,40 @@ void runArray(int arraySize)
 	int *theArray = new int[arraySize];
 	int actualArraySize = 0; // the actual number of elements inside of array (this will grow and shrink)
 
-
+	clock_t startTime;
+	float secondsElapsed;
 	startTime = clock(); // start time
 
 
 	// keep inserting random ints into the array
 	for(int i=0; i< arraySize; i++)
 	{
-
+		int randomInt = randomIntWithMax(10000); // generate a random int from 0 to 10000
+		// now insert this random int into array in order, note that actualArraySize is incremented afterwards
+		insertInOrderArray(theArray, actualArraySize++, randomInt);
 	}
-
 
 	// stop time, display how long it took
 	secondsElapsed = (float)(clock() - startTime)/CLOCKS_PER_SEC; // record seconds elapsed since startTime
 	cout << "array test time: " << secondsElapsed << " seconds" << " and " << startTime << endl;
 
+
+	// if(arraySize == 1000)
+	// 	displayArray(theArray, 0, actualArraySize);
+
 	// free memory and wrap-up
+	delete [] theArray;
 }// end runArray()
 
 /* * * * * * * * * * END Array function definitions * * * * * * * * */
 
 
-/* * * * * * * * * * START misc. function definitions * * * * * * * * */
-
-// prints a bunch of introduction text
-void printStartSequence()
-{
-    cout << endl;
-    cout << "Author: Basheer Subei" << endl;
-    cout << "TA: Nianzu, Lab: 10 am Thursday" << endl;
-    cout << "CS 251 Fall 2014" << endl;
-    cout << "Program: #2, Comparison" << endl;
-    cout << "Built on Ubuntu 12.04, compiled using g++ v4.6.3" << endl;
-    cout << endl;
-
-}
-
-// returns a random number between 0 and max. Values are pseudorandom based on time of running.
-// note: if you run the program multiple times within a second, the random values will be the same
-// because they are based on the time seed (which changes every second).
-int randomIntWithMax(int max)
-{
-  /* initialize random seed: */
-  srand (time(NULL));
-  return rand() % max;
-}
-
-int frequency_of_primes (int n) {
-  int i,j;
-  int freq=n-1;
-  for (i=2; i<=n; ++i) for (j=sqrt(i);j>1;--j) if (i%j==0) {--freq; break;}
-  return freq;
-}
-/* * * * * * * * * * END misc. function definitions * * * * * * * * */
-
 int main()
 {
 	printStartSequence();
+	
+	/* initialize random seed: */
+	srand (time(NULL));
 
 	/* * * * Code for testing and debugging only! * * * * */
 
@@ -311,8 +324,6 @@ int main()
 	/* * * * The real code begins here! * * * * */
 
 	// prepare timers
-	clock_t startTime;
-	float secondsElapsed;
 
 	// test 10 different sizes
 	int sizesToTest[10] = {1000, 3000, 5000, 10000, 30000, 50000, 100000, 300000, 500000, 1000000};
