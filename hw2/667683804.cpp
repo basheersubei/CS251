@@ -25,6 +25,10 @@
 #include <stdlib.h>
 #include <stdio.h>		/* srand, rand */
 #include <time.h>       /* time */
+#include <ctime>      // For time functions
+#include <unistd.h>	  // For usleep()
+#include <math.h>       /* sqrt */
+
 using namespace std;
 
 // defines ARRAY_SIZE macro
@@ -32,7 +36,7 @@ using namespace std;
 
 /* * * * * * * * * * START LinkedList function definitions * * * * * * * * */
 
-void testLinkedList(int arraySize)
+void runLinkedList(int arraySize)
 {
 
 }
@@ -206,9 +210,12 @@ void basicArrayInsertionTest(){
 	delete [] testArray;
 }
 
-void testArray(int arraySize)
+// this function builds up an array (of size arraySize) by inserting random ints 
+// in order (shifting the elements around), then deletes every element one by one
+// using random index positions.
+void runArray(int arraySize)
 {
-
+	// usleep(1000000);
 }
 
 /* * * * * * * * * * END Array function definitions * * * * * * * * */
@@ -241,25 +248,57 @@ int randomIntWithMax(int max)
 
 /* * * * * * * * * * END misc. function definitions * * * * * * * * */
 
+int frequency_of_primes (int n) {
+  int i,j;
+  int freq=n-1;
+  for (i=2; i<=n; ++i) for (j=sqrt(i);j>1;--j) if (i%j==0) {--freq; break;}
+  return freq;
+}
 
 int main()
 {
 	printStartSequence();
+
+	/* * * * Code for testing and debugging only! * * * * */
 
 	// array insertion tested successfully for basic cases
 	basicArrayInsertionTest();
 	// array deletion tested successfully for basic cases
 	basicArrayDeletionTest();
 
+	// testing random number functionality
+	cout << "random number: " << randomIntWithMax(1000) << endl;
+	cout << "random number: " << randomIntWithMax(1000000) << endl;
+
+	// testing timer functionality
+	cout << "testing time:" << endl;
+	clock_t t = clock();
+	frequency_of_primes(999999);
+	t = clock() - t;
+	printf ("It took me %d clicks (%f seconds).\n\n\n",(int)t,((float)t)/CLOCKS_PER_SEC);
+
+
+	/* * * * The real code begins here! * * * * */
+
+	// prepare timers
+	clock_t startTime;
+	float secondsElapsed;
 
 	// test 10 different sizes
 	int sizesToTest[10] = {1000, 3000, 5000, 10000, 30000, 50000, 100000, 300000, 500000, 1000000};
 	for(int i=0; i<ARRAY_SIZE(sizesToTest); i++){
-		testArray(sizesToTest[i]);
-		testLinkedList(sizesToTest[i]);
+		
+		startTime = clock(); // start time
+		runArray(sizesToTest[i]); // run the array test
+		secondsElapsed = (float)(clock() - startTime)/CLOCKS_PER_SEC; // record seconds elapsed since startTime
+		cout << "array test time: " << secondsElapsed << " seconds" << " and " << startTime << endl;
+
+		startTime = clock(); // start time
+		runLinkedList(sizesToTest[i]); // run the linked list test
+		secondsElapsed = (clock() - startTime)/(double)CLOCKS_PER_SEC; // record seconds elapsed since startTime
+		cout << "linked list test time: " << secondsElapsed << " seconds" << endl;
+
 	}
 
-	cout << "random number: " << randomIntWithMax(sizesToTest[0]) << endl;
-	cout << "random number: " << randomIntWithMax(sizesToTest[9]) << endl;
 
 }
