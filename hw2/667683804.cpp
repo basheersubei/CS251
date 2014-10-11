@@ -70,11 +70,12 @@ int frequency_of_primes (int n) {
 
 /* * * * * * * * * * START LinkedList function definitions * * * * * * * * */
 
-void runLinkedList(int arraySize)
+void runLinkedList(int listSize)
 {
 
 	// allocate and prepare first
 
+	// prepare timers
 	clock_t startTime;
 	float secondsElapsed;
 	startTime = clock(); // start time
@@ -83,7 +84,7 @@ void runLinkedList(int arraySize)
 
 	// stop time, display how long it took
 	secondsElapsed = (clock() - startTime)/(double)CLOCKS_PER_SEC; // record seconds elapsed since startTime
-	cout << "linked list test time: " << secondsElapsed << " seconds" << endl;
+	cout << "linked list benchmark time: " << secondsElapsed << " seconds" << " for " << listSize << " elements" << endl << endl << endl;
 
 	// deallocate and free memory
 }
@@ -267,6 +268,7 @@ void runArray(int arraySize)
 	int *theArray = new int[arraySize];
 	int actualArraySize = 0; // the actual number of elements inside of array (this will grow and shrink)
 
+	// prepare timers
 	clock_t startTime;
 	float secondsElapsed;
 	startTime = clock(); // start time
@@ -280,23 +282,24 @@ void runArray(int arraySize)
 		insertInOrderArray(theArray, actualArraySize++, randomInt);
 	}
 
+	// displayArray(theArray, 0, actualArraySize-1);
+
 	// keep deleting ints from random positions in the array
-	for(int i=actualArraySize; i>0; i--)
+	for(int i=actualArraySize; i>=0; i--)
 	{
-		int randomIndex = randomIntWithMax(actualArraySize); // generate a random index from 0 to actualArraySize - 1
+		// ternary operator makes sure randomIntWithMax doesn't blow up when i==0
+		int randomIndex = i==0 ? 0 : randomIntWithMax(actualArraySize); // generate a random index from 0 to actualArraySize - 1
 		// delete that element from the array by 
 		//shifting the elements to its right to the left
 		// note that actualArraySize is decremented afterwards
 		deleteFromArray(theArray, actualArraySize--, randomIndex); 
 	}
 
+	// displayArray(theArray, 0, actualArraySize-1);
+
 	// stop time, display how long it took
 	secondsElapsed = (float)(clock() - startTime)/CLOCKS_PER_SEC; // record seconds elapsed since startTime
 	cout << "array benchmark time: " << secondsElapsed << " seconds" << " for " << arraySize << " elements" << endl;
-
-
-	// if(arraySize == 1000)
-	// 	displayArray(theArray, 0, actualArraySize);
 
 	// free memory and wrap-up
 	delete [] theArray;
@@ -320,11 +323,12 @@ int main()
 	basicArrayDeletionTest();
 
 	// testing random number functionality
+	cout << "/* * * * * testing random number functionality * * * * * */" << endl;
 	cout << "random number: " << randomIntWithMax(1000) << endl;
-	cout << "random number: " << randomIntWithMax(1000000) << endl;
+	cout << "random number: " << randomIntWithMax(1000000) << endl << endl;
 
 	// testing timer functionality
-	cout << "benchmarking time:" << endl;
+	cout << "/* * * * * testing timer functionality * * * * * */" << endl;
 	clock_t t = clock();
 	frequency_of_primes(999999);
 	t = clock() - t;
@@ -333,10 +337,12 @@ int main()
 
 	/* * * * The real code begins here! * * * * */
 
-	// prepare timers
+	cout << "/* * * * * starting actual benchmark... * * * * * */" << endl << endl;
 
 	// test 10 different sizes
 	int sizesToTest[10] = {1000, 2000, 4000, 5000, 6000, 9000, 10000, 15000, 20000, 25000};
+	// int sizesToTest[10] = {1, 2, 4, 5, 6, 9, 10, 15, 20, 25};
+
 	for(int i=0; i<ARRAY_SIZE(sizesToTest); i++){
 		
 		runArray(sizesToTest[i]); // run the array test
