@@ -275,14 +275,24 @@ void runArray(int arraySize)
 	// keep inserting random ints into the array
 	for(int i=0; i< arraySize; i++)
 	{
-		int randomInt = randomIntWithMax(10000); // generate a random int from 0 to 10000
+		int randomInt = randomIntWithMax(10001); // generate a random int from 0 to 10000
 		// now insert this random int into array in order, note that actualArraySize is incremented afterwards
 		insertInOrderArray(theArray, actualArraySize++, randomInt);
 	}
 
+	// keep deleting ints from random positions in the array
+	for(int i=actualArraySize; i>0; i--)
+	{
+		int randomIndex = randomIntWithMax(actualArraySize); // generate a random index from 0 to actualArraySize - 1
+		// delete that element from the array by 
+		//shifting the elements to its right to the left
+		// note that actualArraySize is decremented afterwards
+		deleteFromArray(theArray, actualArraySize--, randomIndex); 
+	}
+
 	// stop time, display how long it took
 	secondsElapsed = (float)(clock() - startTime)/CLOCKS_PER_SEC; // record seconds elapsed since startTime
-	cout << "array test time: " << secondsElapsed << " seconds" << " and " << startTime << endl;
+	cout << "array benchmark time: " << secondsElapsed << " seconds" << " for " << arraySize << " elements" << endl;
 
 
 	// if(arraySize == 1000)
@@ -314,7 +324,7 @@ int main()
 	cout << "random number: " << randomIntWithMax(1000000) << endl;
 
 	// testing timer functionality
-	cout << "testing time:" << endl;
+	cout << "benchmarking time:" << endl;
 	clock_t t = clock();
 	frequency_of_primes(999999);
 	t = clock() - t;
@@ -326,7 +336,7 @@ int main()
 	// prepare timers
 
 	// test 10 different sizes
-	int sizesToTest[10] = {1000, 3000, 5000, 10000, 30000, 50000, 100000, 300000, 500000, 1000000};
+	int sizesToTest[10] = {1000, 2000, 4000, 5000, 6000, 9000, 10000, 15000, 20000, 25000};
 	for(int i=0; i<ARRAY_SIZE(sizesToTest); i++){
 		
 		runArray(sizesToTest[i]); // run the array test
