@@ -88,6 +88,51 @@ void displayList( Node *pTemp)
    cout << "\n";
 }
  
+//-----------------------------------------------------------------
+pNode insertInOrderNode( pNode &head, int number )
+{
+    pNode pNewNode;     // stores new node for malloc
+    pNode pTemp = head; // iterator to move down list
+    
+    // get new node
+    pNewNode = (pNode) malloc ( sizeof( struct Node));
+    // Initialize values
+    pNewNode->data = number;
+    pNewNode->pNext = NULL;
+    
+    // Check to see if list is empty
+    if (head == NULL)  {    
+        // list is empty, so make this the first node
+        head = pNewNode;
+    }
+    else  {
+        // list is not empty
+        pTemp = head;
+         
+        // Iterate through list to find insertion location
+        while ( (pTemp->pNext != NULL) && (number > pTemp->pNext->data) )  {
+            pTemp = pTemp->pNext;        // advance to next node
+        }
+         
+        // See if number goes at front of list
+        if ( number < head->data)  {
+            // insert at front of list
+            pNewNode->pNext = head;
+            head = pNewNode;
+        } 
+        else {
+            // Node goes in the middle or at the end of list
+            // Insert after node pointed to by pTemp
+            pNewNode->pNext = pTemp->pNext;   // redundant assignment of NULL
+                                            //    if appending to end of list
+            pTemp->pNext = pNewNode;
+        }
+         
+    } // end else
+
+    return pNewNode;
+}//end insertInOrderNode()
+
 void runLinkedList(int listSize)
 {
 
