@@ -150,7 +150,19 @@ void runLinkedList(int listSize)
 	float secondsElapsed;
 	startTime = clock(); // start time
 	
-	//do stuff
+	// keep inserting random value nodes in the list
+	for(int i=0; i< listSize; i++)
+	{
+		int randomInt = randomIntWithMax(10001); // generate a random int from 0 to 10000
+		// cout << randomInt << " ";
+		// now insert this random int into array in order, note that actualArraySize is incremented afterwards
+		nodeArray[i] = insertInOrderNode(pHead, randomInt);
+	}
+
+	// displayList(pHead);
+
+	// delete random nodes from list until it's empty
+
 
 	// stop time, display how long it took
 	secondsElapsed = (clock() - startTime)/(double)CLOCKS_PER_SEC; // record seconds elapsed since startTime
