@@ -70,10 +70,35 @@ int frequency_of_primes (int n) {
 
 /* * * * * * * * * * START LinkedList function definitions * * * * * * * * */
 
+typedef struct Node *pNode;      // create a synonym for struct Node*
+struct Node {
+   int data;        // The data being stored at the node
+   Node *pNext;     // Pointer to the next node
+};
+ 
+//-----------------------------------------------------------------
+// Given the head of the list, display numbers on the list
+void displayList( Node *pTemp)
+{
+   cout << "\nList is: ";
+   while( pTemp != NULL) {
+      cout << pTemp->data << " ";
+      pTemp = pTemp->pNext;
+   }
+   cout << "\n";
+}
+ 
 void runLinkedList(int listSize)
 {
 
 	// allocate and prepare first
+	pNode *nodeArray;
+	nodeArray = new pNode[listSize];
+	pNode pHead = NULL;
+	for(int i=0; i<listSize; i++)
+	{
+		nodeArray[i] = new Node;
+	}
 
 	// prepare timers
 	clock_t startTime;
@@ -87,6 +112,7 @@ void runLinkedList(int listSize)
 	cout << "linked list benchmark time: " << secondsElapsed << " seconds" << " for " << listSize << " elements" << endl << endl << endl;
 
 	// deallocate and free memory
+	delete [] nodeArray;
 }
 /* * * * * * * * * * END LinkedList function definitions * * * * * * * * */
 
