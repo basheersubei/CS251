@@ -87,8 +87,58 @@ void displayList( Node *pTemp)
    }
    cout << "\n";
 }
+
+// given a header pointer of a list, traverse to the nth node and remove it from the list
+void deleteNodeFromList(pNode &pHead, int indexToBeDeleted)
+{
+	if(pHead == NULL)
+		return;
+
+	// if deleting first node
+	if(indexToBeDeleted==0){
+		if(pHead->pNext != NULL) // if length is > 1
+			pHead = pHead->pNext;
+		else 					// if length is 1
+			pHead = NULL;		// now length is zero
+
+		return;
+	}
+	
+	pNode pTemp = pHead;
+	int currentIndex = 0;
+
+	// keep traversing the list until you reach the end
+	while(pTemp->pNext != NULL){
+
+		// if we reach the node before the node to be deleted
+		if(currentIndex == indexToBeDeleted - 1)
+		{
+			// this will avoid segfault if indexToBeDeleted is out of bounds
+			if(pTemp->pNext == NULL)
+				return;
+
+			// make pNext skip the next node (effectively deleting it)
+			pTemp->pNext = pTemp->pNext->pNext;
+
+			//there is no need to deallocate the node because that's 
+			//done outside of this function
+
+			return; // we're done here
+		}
+
+		pTemp = pTemp->pNext; // traverse to next node
+		currentIndex++; // increment index counter
+	} // end while traversing list
+
+
+}// end deleteNodeFromList
  
 //-----------------------------------------------------------------
+// given a linkedlist head, it will traverse the list and find the right
+// spot (in order) to insert a new node containing number. After inserting
+// this node into the list (with head pointer being a reference parameter),
+// it returns that new inserted node (used in runLinkedList) which stores it
+// in the arrayNode
 pNode insertInOrderNode( pNode &head, int number )
 {
     pNode pNewNode;     // stores new node for malloc
@@ -140,10 +190,17 @@ void runLinkedList(int listSize)
 	pNode *nodeArray;
 	nodeArray = new pNode[listSize];
 	pNode pHead = NULL;
-	for(int i=0; i<listSize; i++)
+	for(int i=0; i<listSize; i++) // allocating nodes for entire nodeArray
 	{
 		nodeArray[i] = new Node;
 	}
+	int actualListSize = 0;
+
+	// remember, the actual index where the nodes are stored in nodeArray
+	// is *not* related to its position in the list. i.e. the zeroth index
+	// in nodeArray could end up being in the middle of the list (because
+	// new nodes are inserted in ascending order). We don't really care
+	// which index the nodes are stored in.
 
 	// prepare timers
 	clock_t startTime;
@@ -155,14 +212,25 @@ void runLinkedList(int listSize)
 	{
 		int randomInt = randomIntWithMax(10001); // generate a random int from 0 to 10000
 		// cout << randomInt << " ";
-		// now insert this random int into array in order, note that actualArraySize is incremented afterwards
+		// now insert this random node into list in order
 		nodeArray[i] = insertInOrderNode(pHead, randomInt);
+		actualListSize++;
 	}
 
 	// displayList(pHead);
 
 	// delete random nodes from list until it's empty
+	for(int i=listSize; i>0; i--)
+	{
+		int randomIndex = randomIntWithMax(actualListSize); // generate a random index from 0 to actualListSize - 1
+		// cout << "deleting index " << randomIndex << endl;
 
+		// delete that element from the node by traversing to the index and removing the node from list
+		deleteNodeFromList(pHead, randomIndex); 
+		actualListSize--;
+
+		// displayList(pHead);
+	}
 
 	// stop time, display how long it took
 	secondsElapsed = (clock() - startTime)/(double)CLOCKS_PER_SEC; // record seconds elapsed since startTime
