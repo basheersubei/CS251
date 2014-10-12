@@ -210,7 +210,7 @@ void runLinkedList(int listSize)
 	// keep inserting random value nodes in the list
 	for(int i=0; i< listSize; i++)
 	{
-		int randomInt = randomIntWithMax(10001); // generate a random int from 0 to 10000
+		int randomInt = randomIntWithMax(listSize+1); // generate a random int from 0 to 10000
 		// cout << randomInt << " ";
 		// now insert this random node into list in order
 		nodeArray[i] = insertInOrderNode(pHead, randomInt);
@@ -428,7 +428,7 @@ void runArray(int arraySize)
 	// keep inserting random ints into the array
 	for(int i=0; i< arraySize; i++)
 	{
-		int randomInt = randomIntWithMax(10001); // generate a random int from 0 to 10000
+		int randomInt = randomIntWithMax(arraySize+1); // generate a random int from 0 to 10000
 		// now insert this random int into array in order, note that actualArraySize is incremented afterwards
 		insertInOrderArray(theArray, actualArraySize++, randomInt);
 	}
@@ -450,7 +450,7 @@ void runArray(int arraySize)
 
 	// stop time, display how long it took
 	secondsElapsed = (float)(clock() - startTime)/CLOCKS_PER_SEC; // record seconds elapsed since startTime
-	cout << "array benchmark time: " << secondsElapsed << " seconds" << " for " << arraySize << " elements" << endl;
+	cout << "array benchmark time: " << secondsElapsed << " seconds" << " for " << arraySize << " elements ----- ";
 
 	// free memory and wrap-up
 	delete [] theArray;
