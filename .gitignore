@@ -17,3 +17,5 @@
 *.fdb_latexmk
 *.aux
 *.*lock*
+*.zip
+
