@@ -438,14 +438,16 @@ void runArray(int arraySize)
 	// displayArray(theArray, 0, actualArraySize-1);
 
 	// keep deleting ints from random positions in the array
-	for(int i=actualArraySize; i>=0; i--)
+	for(int i=actualArraySize; i>0; i--)
 	{
 		// ternary operator makes sure randomIntWithMax doesn't blow up when i==0
 		int randomIndex = i==0 ? 0 : randomIntWithMax(actualArraySize); // generate a random index from 0 to actualArraySize - 1
+		// cout << "deleting index " << randomIndex << endl;
 		// delete that element from the array by 
 		//shifting the elements to its right to the left
 		// note that actualArraySize is decremented afterwards
-		deleteFromArray(theArray, actualArraySize--, randomIndex); 
+		deleteFromArray(theArray, actualArraySize--, randomIndex);
+		// displayArray(theArray, 0, actualArraySize-1);
 	}
 
 	// displayArray(theArray, 0, actualArraySize-1);
@@ -470,31 +472,31 @@ int main()
 
 	/* * * * Code for testing and debugging only! * * * * */
 
-	// array insertion tested successfully for basic cases
-	basicArrayInsertionTest();
-	// array deletion tested successfully for basic cases
-	basicArrayDeletionTest();
+	// // array insertion tested successfully for basic cases
+	// basicArrayInsertionTest();
+	// // array deletion tested successfully for basic cases
+	// basicArrayDeletionTest();
 
-	// testing random number functionality
-	cout << "/* * * * * testing random number functionality * * * * * */" << endl;
-	cout << "random number: " << randomIntWithMax(1000) << endl;
-	cout << "random number: " << randomIntWithMax(1000000) << endl << endl;
+	// // testing random number functionality
+	// cout << "/* * * * * testing random number functionality * * * * * */" << endl;
+	// cout << "random number: " << randomIntWithMax(1000) << endl;
+	// cout << "random number: " << randomIntWithMax(1000000) << endl << endl;
 
-	// testing timer functionality
-	cout << "/* * * * * testing timer functionality * * * * * */" << endl;
-	clock_t t = clock();
-	frequency_of_primes(999999);
-	t = clock() - t;
-	printf ("It took me %d clicks (%f seconds).\n\n\n",(int)t,((float)t)/CLOCKS_PER_SEC);
-
+	// // testing timer functionality
+	// cout << "/* * * * * testing timer functionality * * * * * */" << endl;
+	// clock_t t = clock();
+	// frequency_of_primes(999999);
+	// t = clock() - t;
+	// printf ("It took me %d clicks (%f seconds).\n\n\n",(int)t,((float)t)/CLOCKS_PER_SEC);
 
 	/* * * * The real code begins here! * * * * */
 
 	cout << "/* * * * * starting actual benchmark... * * * * * */" << endl << endl;
 
 	// test 10 different sizes
-	int sizesToTest[10] = {1000, 2000, 4000, 5000, 6000, 9000, 10000, 15000, 20000, 25000};
-	// int sizesToTest[10] = {1, 2, 4, 5, 6, 9, 10, 15, 20, 25};
+	// int sizesToTest[10] = {1000, 2000, 4000, 5000, 6000, 9000, 10000, 15000, 20000, 25000};
+	int sizesToTest[10] = {1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000};
+	// int sizesToTest[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
 	for(int i=0; i<ARRAY_SIZE(sizesToTest); i++){
 		
@@ -504,5 +506,6 @@ int main()
 
 	}
 
+	cout << "/* * * * * finished benchmark. exiting... Bye! * * * * * */" << endl << endl;
 
 }// end main()
