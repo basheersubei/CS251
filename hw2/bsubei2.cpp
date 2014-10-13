@@ -237,6 +237,8 @@ void runLinkedList(int listSize)
 	cout << "linked list benchmark time: " << secondsElapsed << " seconds" << " for " << listSize << " elements" << endl << endl << endl;
 
 	// deallocate and free memory
+	for(int i=0;i<listSize; i++)
+		delete nodeArray[i];
 	delete [] nodeArray;
 }
 /* * * * * * * * * * END LinkedList function definitions * * * * * * * * */
