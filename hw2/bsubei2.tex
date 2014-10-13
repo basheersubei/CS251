@@ -1,5 +1,5 @@
 \documentclass[11pt, twoside]{article}
-\usepackage{amsmath, amsfonts, mathrsfs, enumitem, listings, color, graphicx, caption, float, indentfirst, titlesec, anysize, hyperref, fancyhdr, textcomp, lipsum}
+\usepackage{amsmath, amsfonts, mathrsfs, enumitem, listings, color, graphicx, caption, subcaption, float, indentfirst, titlesec, anysize, hyperref, fancyhdr, textcomp, lipsum}
 %\marginsize{0.5in}{0.5in}{0.15in}{0.75in}
 
 \titlespacing\section{0pt}{10pt plus 1pt minus 1pt}{8pt plus 1pt minus 1pt}
@@ -27,16 +27,29 @@
 
 \maketitle
 
+Since the operations we are running on the data structures involve not just
+insertion and deletion, but also traversal (when searching for where to insert
+a random number), the algorithmic complexity of both array and linked list
+should be greater than linear time. That means that whatever advantage the
+linked list had over the array (for insertion and deletion) in terms of
+algorithmic complexity are overshadowed by the linear portion (traversal for
+insertion). Therefore, we should not expect linked lists to be any faster than
+arrays. Moreover, since traversing linked lists requires jumping around from pointer to pointer (where each pointer's memory address could be anywhere in memory), the memory caching advantages that the CPU performs will be completely eliminated. Why? Because the addresses of these pointers (comprising the linked list) are not stored contiguously, and are spread all over memory. Fetching the pointers from memory is very expensive, and the CPU wastes a lot of cycles waiting for that memory to arrive. The array implementation, on the other hand, stores all the numbers next to each other, and so the CPU doesn't have to fetch the numbers from random locations in memory. Instead, it just grabs them from the cache (because of the data's proximity to each other).\\
 
+There is also the effect of having to shift the elements when inserting/deleting into an array (linear complexity), whereas linked lists only require changing a pointer (constant complexity). However, because of the previously mentioned linear runtime (caused by searching for insertion), adding this linear portion still results in linear runtime for the array. Both arrays and linked lists have linear algorithmic complexity. However, algorithmic complexity doesn't necessarily correlate with runtime, because of CPU optimizations or the lack thereof. In other words, linked lists have quadratic-like runtime, although they only have linear complexity O(n).\\
 
+Conclusion: the array outperforms the linked list implementation because of caching advantages. This only shows for larger data sets as shown in the figures below.
 
 \begin{figure}[H]
-  \centering
-  \includegraphics[scale=0.6]{graph1} 
-\end{figure}
-\begin{figure}[H]
-  \centering
-  \includegraphics[scale=0.6]{graph2} 
+	\begin{subfigure}{.5\textwidth}
+	  \raggedright
+	  \includegraphics[scale=0.5]{graph1} 
+	\end{subfigure}
+	\begin{subfigure}{.5\textwidth}
+	  \raggedleft
+	  \includegraphics[scale=0.5]{graph2} 
+	\end{subfigure}
+
 \end{figure}
 
 \vfill
