@@ -271,7 +271,7 @@ int insertInOrderArray( int* &theArray, int arraySize, int newNumber)
 		theArray[0] = newNumber;
 		return 0;
 	}
-	// insert the newNumber in the initial spot
+	// insert the newNumber in the initial spot (at the end of the list)
 	else{
 		theArray[newNumberIndex] = newNumber;
 	}
