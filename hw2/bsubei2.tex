@@ -38,7 +38,7 @@ arrays. Moreover, since traversing linked lists requires jumping around from poi
 
 There is also the effect of having to shift the elements when inserting/deleting into an array (linear complexity), whereas linked lists only require changing a pointer (constant complexity). However, because of the previously mentioned linear runtime (caused by searching for insertion), adding this linear portion still results in linear runtime for the array. Both arrays and linked lists have linear algorithmic complexity. However, algorithmic complexity doesn't necessarily correlate with runtime, because of CPU optimizations or the lack thereof. In other words, linked lists have quadratic-like runtime, although they only have linear complexity O(n).\\
 
-Conclusion: the array outperforms the linked list implementation because of caching advantages. This only shows for larger data sets as shown in the figures below.
+Conclusion: the array outperforms the linked list implementation because of \href{http://gameprogrammingpatterns.com/data-locality.html}{caching} advantages. This only shows for larger data sets (around 60,000) as shown in the figures below.
 
 \begin{figure}[H]
 	\begin{subfigure}{.5\textwidth}
