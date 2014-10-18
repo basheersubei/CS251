@@ -1,3 +1,25 @@
+         /* ------------------------------------------------ 
+
+          * Display Tree HW3
+          
+          * Class: CS 251, Fall 2014.
+
+          * System: Ubuntu 12.04 compiled with g++
+
+          * Author: Basheer Subei
+          
+          * I started off sample program minHeap.cpp
+          * provided by Prof. Reed for CS 251 
+          * Fall 2014 at UIC and modified it to work for the homework.
+          * Note that only the displayQueue method is rewritten for this assignment.
+
+          * This program displays a binary tree (including edges) in ASCII.
+
+          * -------------------------------------------------
+
+          */
+
+
 //
 //  minHeap.cpp
 //     Implement a min heap, an implementation of a priority queue.
@@ -12,60 +34,6 @@
 //  Created by Dale Reed on 10/7/14.
 //  Copyright (c) 2014 Dale Reed. All rights reserved.
 //
-/*  Running this program looks like
-         Starting Heap program
-         
-         1492
-         1783 1776
-         1804 1865 1945 1963
-         1918 2001 1941
-         
-         Successively displaying and removing min values
-         Removing:1492
-         
-         1776
-         1783 1941
-         1804 1865 1945 1963
-         1918 2001
-         Removing:1776
-         
-         1783
-         1804 1941
-         1918 1865 1945 1963
-         2001
-         Removing:1783
-         
-         1804
-         1865 1941
-         1918 2001 1945 1963
-         Removing:1804
-         
-         1865
-         1918 1941
-         1963 2001 1945
-         Removing:1865
-         
-         1918
-         1945 1941
-         1963 2001
-         Removing:1918
-         
-         1941
-         1945 2001
-         1963
-         Removing:1941
-         
-         1945
-         1963 2001
-         Removing:1945
-         
-         1963 
-         2001 
-         Removing:1963
-         
-         2001 
-         Removing:2001
- */
 
 #include <iostream>
 #include <cmath>
@@ -74,9 +42,14 @@ using namespace std;
 // define global constants and structures
 #define MAX_SIZE 100+1    // Add 1 because we start at position 1, not 0
 
+void displayQueue( int q[], int size)
+{
+    //TODO actual assignment #3 code goes here
+}
+
 
 // Display the queue, one level per line
-void displayQueue( int q[], int size)
+void displayQueueUgly( int q[], int size)
 {
     for( int i=1; i<size; i++) {
         // Display newline between levels if current value is power of 2
@@ -267,13 +240,13 @@ int main() {
     }
     
     // Display the values in the queue, by level
-    displayQueue(q, qSize);
+    displayQueueUgly(q, qSize);
     
     // Successively get the minimum value until tree is empty
     cout << "\nSuccessively displaying and removing min values" << endl;
     while( qSize > 1) {
         cout << "Removing:" << getMin( q, qSize) << "\n";
-        displayQueue( q, qSize);
+        displayQueueUgly( q, qSize);
     }
     
     cout << "\n\nDone with program...\n";
