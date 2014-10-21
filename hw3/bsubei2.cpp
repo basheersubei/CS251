@@ -126,6 +126,10 @@ void displayQueue( int q[], int size)
         // the string constructor here just creates a string of underscores with length padding_interval - next_padding_interval
         
         if(padding_interval-next_padding_interval <1){
+            
+            if(i==16)// HACK: shifts lowest level one space to the right to make it look better
+                cout << " ";
+
             cout << setw(4) << q[i] << " ";
         }
         else{
