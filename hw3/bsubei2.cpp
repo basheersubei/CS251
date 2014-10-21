@@ -45,6 +45,9 @@ using namespace std;
 // define global constants and structures
 #define MAX_SIZE 100+1    // Add 1 because we start at position 1, not 0
 
+int leftChild(int);
+int rightChild(int);
+
 void displayQueue( int q[], int size)
 {
     //TODO actual assignment #3 code goes here
@@ -82,7 +85,10 @@ void displayQueue( int q[], int size)
         //    logb gives floating point log, and log2 is integer log value.
         if( logb(i) == log2(i)) {
             // cout << i << endl;
-            cout << endl;
+
+            cout << endl; //print out a return
+
+            // now print out the edges (branches)
             if(i != 1){
 
                 int pad_right = next_padding_interval*2+2;
@@ -94,15 +100,16 @@ void displayQueue( int q[], int size)
 
                 for(int j=i; j<i+siblings ; j++){
                     
-                    if(j % 2 == 0){
-                       
-                        if(j>15)
+
+                    // if left branch and it exists
+                    if(j % 2 == 0 && j < size){
+                        if(j>15) //if lowest level, treat it specially (vertical line)
                             cout << setw(pad_left) << "|";
                         else
                             cout << setw(pad_left) << "/";
-
-                    }else{
-                        if(j>15)
+                    // if right branch and it exists
+                    }else if (j % 2 == 1 && j < size){
+                        if(j>15) //if lowest level, treat it specially (vertical line)
                             cout << setw(pad_right) << "|";
                         else
                             cout << setw(pad_right) << "\\";
@@ -115,16 +122,13 @@ void displayQueue( int q[], int size)
 
             cout << endl;
 
-            // cout << setw(40);
 
         }
-        // cout << setfill('_');
-        // for(int j=0;j<padding_interval;j++)
-        //     cout << "_";
 
         // print padding on the left and give it a certain width
         // the string constructor here just creates a string of underscores with length padding_interval - next_padding_interval
         
+        //print out the actual nodes (also the horizontal portion of the branches)
         if(padding_interval-next_padding_interval <1){
             
             if(i==16)// HACK: shifts lowest level one space to the right to make it look better
@@ -133,10 +137,23 @@ void displayQueue( int q[], int size)
             cout << setw(4) << q[i] << " ";
         }
         else{
-            cout << setw(padding_interval) << std::string(padding_interval-next_padding_interval, '_');
+
+            //if there's a left branch, print the horizontal part
+            if(leftChild(i) < size)    
+                cout << setw(padding_interval) << std::string(padding_interval-next_padding_interval, '_');
+            else //otherwise, put empty spaces
+                cout << setw(padding_interval) << std::string(padding_interval-next_padding_interval, ' ');
+            
+
             cout << setw(4) << q[i]; // print the element and assume width of 4
-            // print padding on the right
-            cout << std::string(padding_interval-next_padding_interval, '_');
+
+
+            //if there's a right branch, print the horizontal part
+            if(rightChild(i) < size)
+                cout << std::string(padding_interval-next_padding_interval, '_');
+            else //otherwise, put empty spaces
+                cout << std::string(padding_interval-next_padding_interval, ' ');
+
 
         }
 
@@ -333,8 +350,8 @@ int main() {
     
     cout << "Starting Heap program \n";
     
-    int numberOfValues = 31;
-    int valuesToAdd[] = {1783,1776,1492,1804,1865,1945,1963,1918,2001,1941,9000,9001,9002,9003,9004,9005,9006,9007,9008,9009,9010,9011,9012,9013,9014,9015,9016,9017,9018,9019,9020};
+    int numberOfValues = 20;
+    int valuesToAdd[] = {1783,1776,1492,1804,1865,1945,1963,1918,2001,1941,9000,9001,9002,9003,9004,9005,9006,9007,9008,9009};
 
     for( int i=0; i<numberOfValues; i++) {
         qInsert( q, qSize, valuesToAdd[ i]);
