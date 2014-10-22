@@ -98,7 +98,7 @@ void traverseTreeAndWriteDOT( Node *pRoot, ofstream &file)
      // if left child is there, print the node with the value on the left.
      if(pRoot->pLeft != NULL)
      {     
-          file << pRoot->data << " -> " << pRoot->pLeft->data << ";" << endl;
+          file << pRoot->data << " -> " << pRoot->pLeft->data << " [ label=\"left\" ];" << endl;
           traverseTreeAndWriteDOT(pRoot->pLeft, file);
      
      // if left child is missing, print an invisible node on the left
@@ -111,7 +111,7 @@ void traverseTreeAndWriteDOT( Node *pRoot, ofstream &file)
      // a previous node has already been printed (either real or invisible)
      if(pRoot->pRight != NULL)
      {
-          file << pRoot->data << " -> " << pRoot->pRight->data << ";" << endl;
+          file << pRoot->data << " -> " << pRoot->pRight->data << " [ label=\"right\" ];" << endl;
           traverseTreeAndWriteDOT(pRoot->pRight, file);
      
      // if right child is missing, print an invisible node on the right
