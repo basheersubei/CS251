@@ -86,7 +86,7 @@ struct Node {
 void traverseTreeAndWriteDOT( Node *pRoot, ofstream &file)
 {
      // random int is used to insert invisible nodes to fix #14 (horizontal positions for child nodes)
-     int random = rand() % 10000;
+     int random = (rand() % 10000)*-1;
 
      // if the node is null, return and do nothing
      if(pRoot == NULL)
