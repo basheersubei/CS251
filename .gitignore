@@ -18,4 +18,4 @@
 *.aux
 *.*lock*
 *.zip
-
+*.dot
