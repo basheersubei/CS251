@@ -110,7 +110,6 @@ void displayTree( Node *pRoot)
      myfile.open ("example.dot");
      
      myfile << "digraph BST {" << endl << "node [fontname=\"Arial\"];" << endl;
-     myfile << "graph [ordering=\"out\"];" << endl;
 
      //print out this node
      traverseTreeAndWriteDOT( pRoot, myfile);
