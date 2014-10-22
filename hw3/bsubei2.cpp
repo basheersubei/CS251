@@ -59,6 +59,27 @@ struct Node {
 };
  
 
+// prints a bunch of introduction text, mainly for the TA
+void printStartSequence()
+{
+    cout << endl;
+    cout << "Author: Basheer Subei" << endl;
+    cout << "TA: Nianzu, Lab: 10 am Thursday" << endl;
+    cout << "CS 251 Fall 2014" << endl;
+    cout << "Program: #3, Graphical BST Display" << endl;
+    cout << "Built on Ubuntu 12.04, compiled using g++ v4.6.3" << endl << endl;
+    cout << "/ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */" << endl;
+    cout << "IMPORTANT: Please check the output file named binary-tree.dot after running!\n\
+You must then run the output DOT file in a program that displays DOT graphs.\n\
+Just open http://sandbox.kidstrythisathome.com/erdos/ and use the ONLINE tool for easiest way.\n\
+Sorry for the bother (it's better than you having to install boost libraries to display it within my program, right?)\n";
+    
+    cout << "/ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */" << endl << endl;
+
+    cout << "Initiating program..." << endl;
+
+}
+
 // traverses a tree and writes it to a DOT file
 // takes in a tree Node* and a outputfilestream (ofstream type)
 void traverseTreeAndWriteDOT( Node *pRoot, ofstream &file)
@@ -103,7 +124,7 @@ void traverseTreeAndWriteDOT( Node *pRoot, ofstream &file)
 // Display the tree, one level per line
 void displayTree( Node *pRoot)
 {
-    cout << "\n" << "Please check the file binary-tree.dot for the output" << endl;
+    cout << "\n" << "Reading tree... Writing to output file..." << endl;
 
     // create file on filesystem and open it
      ofstream myfile;
@@ -120,6 +141,8 @@ void displayTree( Node *pRoot)
 
      // close actual file on filesystem
      myfile.close();
+
+     cout << "Finished writing to output file. Please check the file binary-tree.dot for the output. Exiting..." << endl;
 
 }// end displayTree(...)
  
@@ -182,6 +205,7 @@ int main()
     // Sample input value for loop below to give tree discussed in class is:
     //   11 3 15 1 7 13 19 2 5 9 17 8 -1
      
+     printStartSequence();
     // Loop to read in input values
     cout << "To build a BST enter positive integer values, followed by -1 \n";
     while (inputValue != -1) {
@@ -192,9 +216,9 @@ int main()
     }
  
     // Display result of in-order traversal of tree
-    cout << "In-order traversal gives: ";
-    inOrderTraversal( pRoot);
-    cout << endl;
+    // cout << "In-order traversal gives: ";
+    // inOrderTraversal( pRoot);
+    // cout << endl;
      
     /*  For input of:  
              11 3 15 1 7 13 19 2 5 9 17 8 -1
