@@ -65,6 +65,7 @@
  */
  
 #include <iostream>
+#include <fstream>
 using namespace std;
  
 // struct for the tree nodes
@@ -183,6 +184,28 @@ int main()
      
     // Display the tree
     displayTree( pRoot);
+
+     ofstream myfile;
+     myfile.open ("example.dot");
+    string my_string = "digraph BST { \n\
+         node [fontname=\"Arial\"]; \n\
+         15 -> 6; \n\
+         null0 [shape=point]; \n\
+         6 -> null0; \n\
+         null1 [shape=point]; \n\
+         6 -> null1; \n\
+         15 -> 18; \n\
+         18 -> 17; \n\
+         null2 [shape=point]; \n\
+         17 -> null2; \n\
+         null3 [shape=point]; \n\
+         17 -> null3; \n\
+         null4 [shape=point]; \n\
+         18 -> null4; \n\
+}\n";
+
+     myfile << my_string;
+     myfile.close();
      
     cout<<"\nDone \n";
 }// end main()
