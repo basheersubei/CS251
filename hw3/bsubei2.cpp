@@ -22,50 +22,28 @@
 
 
 * example DOT file output:
-     graph G {
-     0[label="0"];
-     1[label="1"];
-     2[label="2"];
-     3[label="3"];
-     4[label="4"];
-     5[label="5"];
-     6[label="6"];
-     7[label="7"];
-     8[label="8"];
-     9[label="0"];
-     0--9 ;
-     0--5 ;
-     0--2 ;
-     0--1 ;
-     ...
-     ...
+     digraph BST {
+     node [fontname="Arial"];
+     11 -> 3;
+     3 -> 1;
+     1 -> -8563 [style=invis]; -8563 [style=invis];
+     1 -> 2;
+     3 -> 7;
+     7 -> 5;
+     7 -> 9;
+     9 -> 8;
+     9 -> -6290 [style=invis]; -6290 [style=invis];
+     11 -> 15;
+     15 -> 13;
+     15 -> 19;
+     19 -> 17;
+     19 -> -4867 [style=invis]; -4867 [style=invis];
      }
 
 
 
-*/
 
- // binarySearchTree.cpp
-//    Create a Binary Search Tree
-//
-// Sample run (so far) looks like:
-/*
-     To build a BST enter positive integer values, followed by -1
-     11 3 15 1 7 13 19 2 5 9 17 8 -1
-     In-order traversal gives: 1 2 3 5 7 8 9 11 13 15 17 19
-      
-     As a tree this looks like:
-           ^
-        (    )
-       (      )
-        (    )
-          ||
-          ||
-     ... .. .. This tree is not quite right ...
-      
-      
-     Done
- */
+*/
  
 #include <iostream>
 #include <fstream>
@@ -96,6 +74,7 @@ void traverseTreeAndWriteDOT( Node *pRoot, ofstream &file)
      if(pRoot->pLeft == NULL && pRoot->pRight == NULL)
           return;
      
+     // if left child is there, print the node with the value on the left.
      if(pRoot->pLeft != NULL)
      {     
           file << pRoot->data << " -> " << pRoot->pLeft->data << ";" << endl;
@@ -106,6 +85,9 @@ void traverseTreeAndWriteDOT( Node *pRoot, ofstream &file)
           file << pRoot->data << " -> " << random << " [style=invis]; " << random << " [style=invis];" << endl;
 
 
+     // if right child is there, print the node with the value on the right.
+     // the fact that it will be positioned on the right is implied because
+     // a previous node has already been printed (either real or invisible)
      if(pRoot->pRight != NULL)
      {
           file << pRoot->data << " -> " << pRoot->pRight->data << ";" << endl;
@@ -115,25 +97,25 @@ void traverseTreeAndWriteDOT( Node *pRoot, ofstream &file)
      }else
           file << pRoot->data << " -> " << random << " [style=invis]; " << random << " [style=invis];" << endl;
 
-
-
 }
 
 //--------------------------------------------------------------------------
 // Display the tree, one level per line
 void displayTree( Node *pRoot)
 {
-    cout << "\n" << "As a tree this looks like: " << endl;
+    cout << "\n" << "Please check the file binary-tree.dot for the output" << endl;
 
+    // create file on filesystem and open it
      ofstream myfile;
      myfile.open ("example.dot");
      
+     // print the header of the DOT file
      myfile << "digraph BST {" << endl << "node [fontname=\"Arial\"];" << endl;
 
-     //print out this node
+     //print out this tree to DOT file (throws in the tree root node and the file handle)
      traverseTreeAndWriteDOT( pRoot, myfile);
-     // myfile << "15 -> 6; \n";
 
+     // ending of DOT file
      myfile << "}" << endl;
 
 
