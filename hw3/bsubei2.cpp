@@ -118,8 +118,8 @@ void displayTree( Node *pRoot)
      // ending of DOT file
      myfile << "}" << endl;
 
-
-
+     // close actual file on filesystem
+     myfile.close();
 
 }// end displayTree(...)
  
