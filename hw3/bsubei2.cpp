@@ -69,6 +69,8 @@
  
 #include <iostream>
 #include <fstream>
+#include <stdlib.h>      /* srand, rand */
+#include <stdio.h>       /* srand, rand */
 using namespace std;
  
 // struct for the tree nodes
@@ -83,21 +85,38 @@ struct Node {
 // takes in a tree Node* and a outputfilestream (ofstream type)
 void traverseTreeAndWriteDOT( Node *pRoot, ofstream &file)
 {
+     // random int is used to insert invisible nodes to fix #14 (horizontal positions for child nodes)
+     int random = rand() % 10000;
+
+     // if the node is null, return and do nothing
      if(pRoot == NULL)
+          return;
+
+     // if both left and right children are missing, return because there's nothing to do
+     if(pRoot->pLeft == NULL && pRoot->pRight == NULL)
           return;
      
      if(pRoot->pLeft != NULL)
      {     
           file << pRoot->data << " -> " << pRoot->pLeft->data << ";" << endl;
           traverseTreeAndWriteDOT(pRoot->pLeft, file);
-     }
+     
+     // if left child is missing, print an invisible node on the left
+     }else
+          file << pRoot->data << " -> " << random << " [style=invis]; " << random << " [style=invis];" << endl;
+
 
      if(pRoot->pRight != NULL)
      {
-
           file << pRoot->data << " -> " << pRoot->pRight->data << ";" << endl;
           traverseTreeAndWriteDOT(pRoot->pRight, file);
-     }
+     
+     // if right child is missing, print an invisible node on the right
+     }else
+          file << pRoot->data << " -> " << random << " [style=invis]; " << random << " [style=invis];" << endl;
+
+
+
 }
 
 //--------------------------------------------------------------------------
@@ -210,6 +229,9 @@ int main()
                8
      */
      
+     // generate seed for randomizer
+     srand (time(NULL));
+
     // Display the tree
     displayTree( pRoot);
      
