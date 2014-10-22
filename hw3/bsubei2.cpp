@@ -15,6 +15,9 @@
 * Instructions can be found at:
 * https://sites.google.com/site/uiccs251/programming-assignments/prog-3-display-tree
 
+* Assuming unique values passed in by the user, all we have to do is traverse the tree
+* and write the relation from node to node. For example, when we reach a node,
+* if it has children, we write out its children to the DOT file as we step into the child.
 * -------------------------------------------------
 
 
@@ -75,23 +78,49 @@ struct Node {
     Node *pRight;   // right child pointer
 };
  
- 
+
+// traverses a tree and writes it to a DOT file
+// takes in a tree Node* and a outputfilestream (ofstream type)
+void traverseTreeAndWriteDOT( Node *pRoot, ofstream &file)
+{
+     if(pRoot == NULL)
+          return;
+     
+     if(pRoot->pLeft != NULL)
+     {     
+          file << pRoot->data << " -> " << pRoot->pLeft->data << ";" << endl;
+          traverseTreeAndWriteDOT(pRoot->pLeft, file);
+     }
+
+     if(pRoot->pRight != NULL)
+     {
+
+          file << pRoot->data << " -> " << pRoot->pRight->data << ";" << endl;
+          traverseTreeAndWriteDOT(pRoot->pRight, file);
+     }
+}
+
 //--------------------------------------------------------------------------
 // Display the tree, one level per line
 void displayTree( Node *pRoot)
 {
     cout << "\n" << "As a tree this looks like: " << endl;
+
+     ofstream myfile;
+     myfile.open ("example.dot");
      
-    // ... your code to display tree ...
-    cout << "      ^     \n"
-         << "   (    )   \n"
-         << "  (      )  \n"
-         << "   (    )   \n"
-         << "     ||     \n"
-         << "     ||     \n"
-         << "  ... .. .. This tree is not quite right ... \n";
-     
-    cout << endl;   // make sure output buffer is flushed
+     myfile << "digraph BST {" << endl << "node [fontname=\"Arial\"];" << endl;
+     myfile << "graph [ordering=\"out\"];" << endl;
+
+     //print out this node
+     traverseTreeAndWriteDOT( pRoot, myfile);
+     // myfile << "15 -> 6; \n";
+
+     myfile << "}" << endl;
+
+
+
+
 }// end displayTree(...)
  
  
@@ -184,28 +213,6 @@ int main()
      
     // Display the tree
     displayTree( pRoot);
-
-     ofstream myfile;
-     myfile.open ("example.dot");
-    string my_string = "digraph BST { \n\
-         node [fontname=\"Arial\"]; \n\
-         15 -> 6; \n\
-         null0 [shape=point]; \n\
-         6 -> null0; \n\
-         null1 [shape=point]; \n\
-         6 -> null1; \n\
-         15 -> 18; \n\
-         18 -> 17; \n\
-         null2 [shape=point]; \n\
-         17 -> null2; \n\
-         null3 [shape=point]; \n\
-         17 -> null3; \n\
-         null4 [shape=point]; \n\
-         18 -> null4; \n\
-}\n";
-
-     myfile << my_string;
-     myfile.close();
      
     cout<<"\nDone \n";
 }// end main()
