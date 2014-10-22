@@ -107,7 +107,7 @@ void displayTree( Node *pRoot)
 
     // create file on filesystem and open it
      ofstream myfile;
-     myfile.open ("example.dot");
+     myfile.open ("binary-tree.dot");
      
      // print the header of the DOT file
      myfile << "digraph BST {" << endl << "node [fontname=\"Arial\"];" << endl;
