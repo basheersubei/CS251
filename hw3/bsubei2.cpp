@@ -91,6 +91,23 @@ struct Node {
     Node *pRight;   // right child pointer
 };
  
+int measureTreeDepth( Node *pRoot, int depth)
+{
+  int leftmax = depth;
+  int rightmax = depth;
+
+  if( pRoot != NULL) {
+    
+    depth++; // increment depth because this node exists, therefore
+
+    leftmax = measureTreeDepth( pRoot->pLeft, depth);   // recurse down to the left
+    
+    rightmax = measureTreeDepth( pRoot->pRight, depth);   // recurse down to the right
+
+  }
+
+  return max(leftmax, rightmax);
+}
  
 //--------------------------------------------------------------------------
 // Display the tree, one level per line
@@ -206,6 +223,8 @@ int main()
      
     // Display the tree
     displayTree( pRoot);
+
+    cout << "the depth of the tree is " << measureTreeDepth(pRoot, 0) << endl;
      
     cout<<"\nDone \n";
 }// end main()
