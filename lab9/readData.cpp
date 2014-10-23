@@ -66,7 +66,7 @@ void OutputAdjacencyList(Node **successor, int N)
 
 void ReadDataFromFile(string filename)
 {
-    ifstream myfile(filename);
+    ifstream myfile(filename.c_str()); // need to convert to C-string because of ifstream's weird constructor
     
     int N;
     string * cityName;
