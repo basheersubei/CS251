@@ -102,8 +102,7 @@ void ReadDataFromFile(string filename)
 
 int main(int argc, const char * argv[])
 {
-    // TODO1: Change the following file name and path so you can read your data file.
-    string filename="/Users/vena/Documents/Course/TA CS 251/lab9/data.txt";
+    string filename="data.txt";
     int ** adjacencyMatrix;
     int N=0;//Total number of cities
     Node **successor=NULL;
