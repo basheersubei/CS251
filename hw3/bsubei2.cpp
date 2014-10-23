@@ -97,16 +97,22 @@ struct Node {
 void displayTree( Node *pRoot)
 {
     cout << "\n" << "As a tree this looks like: " << endl;
-     
-    // ... your code to display tree ...
-    cout << "      ^     \n"
-         << "   (    )   \n"
-         << "  (      )  \n"
-         << "   (    )   \n"
-         << "     ||     \n"
-         << "     ||     \n"
-         << "  ... .. .. This tree is not quite right ... \n";
-     
+
+    // first, measure the depth of the tree, D
+
+    // then initialize two queues Q1 and Q2 (one to hold nodes of current layer and the next to hold those of next layer)
+
+    // loop through from D to 0 (counter i)
+      // for every node in Q1
+        // print 2^i - 1 spaces or 2^(i+1) - 1 spaces
+
+        // if node not null, print null value
+        // if left node exists, push it to Q2, else push null
+        // if right node exists, push it to Q2, else push null
+
+      // copy Q2 to Q1 and delete Q2
+      // print endline
+
     cout << endl;   // make sure output buffer is flushed
 }// end displayTree(...)
  
