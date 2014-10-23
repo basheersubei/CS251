@@ -56,7 +56,7 @@ void ReadDataFileToAdjacencyMatrix(string filename, int ** &adjacencyMatrix, int
             cout<<temp;
 
             adjacencyMatrix[i] = new int[N]; // allocate memory for the N columns in this row
-            
+
             // now go through the N columns in this row
             for(int j=0;j < N; j++) {
                 myfile>>value;
@@ -85,11 +85,77 @@ void OutputAdjacentMatrix(int **adjacentMatrix, int N)
 }
 
 
-//TODO3: finish the code to read from the file and put it in an adjacency Matrix.
+//read from the file and put it in an adjacency list.
 void ReadDataFileToAdjacencyList(string filename, Node ** &successor, int &N)
 {
-   // Your code here...
-    
+
+    ifstream myfile(filename.c_str()); // need to convert to C-string because of ifstream's weird constructor
+
+    string * cityName;
+
+    // open file
+    if(myfile.is_open()) {
+
+        // read in number of cities
+        myfile>>N;
+        cout<<N<<endl;
+        
+        // dynamically allocate space for the adjacency list (just for the N rows)
+        // each row is a Node*
+        successor = new Node*[N];
+
+        // read in names of cities (first line)
+        cityName = new string[N];
+        for(int i=0;i<N;i++) {
+            myfile>>cityName[i];
+            cout<<cityName[i]<<" ";
+        }
+        cout<<endl;
+        
+        int value;
+        string temp;
+
+        // go through each of the N rows
+        for(int i=0;i<N;i++) {
+
+            // temp just holds the name of the city (beginning of each line)
+            myfile>> temp;
+            cout<<temp;
+
+            successor[i] = new Node; // allocate memory for the N columns in this row
+            successor[i]->cityName = temp; // the cityName for this first node 
+            //successor[i]->index = ???
+            //successor[i]->weight = ???
+
+            // now go through the N columns in this row
+            for(int j=0;j < N; j++) {
+                myfile>>value;
+
+                Node* pTemp;
+                // if we find an element, add it to THE LAST node on this row in the adjacency list
+                if(value>0){
+
+                    pTemp = successor[i];// first node in this row
+                    // go to the last node on this row
+                    while(pTemp->pNext != NULL)
+                        pTemp=pTemp->pNext;
+                    
+
+                    //create a new Node at the last node in this row
+                    pTemp->pNext = new Node();
+                    pTemp->pNext->weight = value; // the value has the weight (of the flight distance)
+                    pTemp->pNext->index = j; // j (the column number) indicates which index this row is adjacent to
+                    pTemp->pNext->cityName = cityName[j]; // cityName was an array created when we went over the first line
+                }
+                cout<<" "<<value;
+            }
+            cout<<endl;
+        }
+    } else {
+        cout << "open file error!"<<endl;
+    }
+
+
 }
 
 
@@ -154,15 +220,15 @@ int main(int argc, const char * argv[])
     int N=0;//Total number of cities
     Node **successor=NULL;
     
-    // ReadDataFromFile(filename);
+    ReadDataFromFile(filename);
     
    ReadDataFileToAdjacencyMatrix(filename, adjacencyMatrix, N);
     
    OutputAdjacentMatrix(adjacencyMatrix,N);
     
-  //  ReadDataFileToAdjacencyList(filename, successor, N);
+   ReadDataFileToAdjacencyList(filename, successor, N);
     
-   // OutputAdjacencyList(successor, N);
+   OutputAdjacencyList(successor, N);
 
     return 0;
 }
