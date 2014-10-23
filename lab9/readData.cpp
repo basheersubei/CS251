@@ -9,6 +9,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+
 using namespace std;
 
 struct Node {
@@ -19,10 +20,56 @@ struct Node {
 };
 
 
-//TODO2: finish the code to read from the file and put it in an adjacency Matrix.
+// read from the file and put it in an adjacency Matrix.
 void ReadDataFileToAdjacencyMatrix(string filename, int ** &adjacencyMatrix, int &N)
 {
-    // Your code here...
+    ifstream myfile(filename.c_str()); // need to convert to C-string because of ifstream's weird constructor
+
+    string * cityName;
+
+    // open file
+    if(myfile.is_open()) {
+
+        // read in number of cities
+        myfile>>N;
+        cout<<N<<endl;
+        
+        // dynamically allocate space for the adjacency matrix (just for the rows)
+        adjacencyMatrix = new int*[N];
+
+        // read in names of cities (first line)
+        cityName = new string[N];
+        for(int i=0;i<N;i++) {
+            myfile>>cityName[i];
+            cout<<cityName[i]<<" ";
+        }
+        cout<<endl;
+        
+        int value;
+        string temp;
+
+        // go through each of the N rows
+        for(int i=0;i<N;i++) {
+
+            // temp just holds the name of the city (beginning of each line)
+            myfile>> temp;
+            cout<<temp;
+
+            adjacencyMatrix[i] = new int[N]; // allocate memory for the N columns in this row
+            
+            // now go through the N columns in this row
+            for(int j=0;j < N; j++) {
+                myfile>>value;
+                adjacencyMatrix[i][j] = value;
+                cout<<" "<<value;
+            }
+            cout<<endl;
+        }
+    } else {
+        cout << "open file error!"<<endl;
+    }
+
+
 }
 
 
@@ -107,11 +154,11 @@ int main(int argc, const char * argv[])
     int N=0;//Total number of cities
     Node **successor=NULL;
     
-    ReadDataFromFile(filename);
+    // ReadDataFromFile(filename);
     
-  //  ReadDataFileToAdjacencyMatrix(filename, adjacencyMatrix, N);
+   ReadDataFileToAdjacencyMatrix(filename, adjacencyMatrix, N);
     
-  //  OutputAdjacentMatrix(adjacencyMatrix,N);
+   OutputAdjacentMatrix(adjacencyMatrix,N);
     
   //  ReadDataFileToAdjacencyList(filename, successor, N);
     
