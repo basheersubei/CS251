@@ -75,17 +75,19 @@ void displayQueue( int q[], int size)
 
     // int level = log2(size); // get bottom level in the heap
     // int siblings = (2 << (level-1)); // get how many siblings bottom level should have (assuming full)
+    int max_width = getTotalLevels(size)*16;
+    cout << "max width is " << max_width << endl;
 
     for( int i=1; i<size; i++) {
 
         int level = log2(i); // get level in the heap
         int siblings = (2 << (level-1)); // get how many siblings this level should have (assuming full)
-        int padding_interval = (siblings > 0) ? (80-siblings*4) / (siblings+1): 42;
+        int padding_interval = (siblings > 0) ? (max_width-siblings*4) / (siblings+1): max_width/2;
         padding_interval = (padding_interval<0) ? 0 : padding_interval;
 
         int next_level = level + 1;
         int next_siblings = (2 << (next_level-1));
-        int next_padding_interval = (next_siblings > 1) ? (80- next_siblings*4) / (next_siblings+1) : 40;
+        int next_padding_interval = (next_siblings > 1) ? (max_width- next_siblings*4) / (next_siblings+1) : max_width/2 + 2;
         next_padding_interval += 4;
         next_padding_interval = (next_padding_interval<0) ? 0 : next_padding_interval;
 
@@ -113,15 +115,17 @@ void displayQueue( int q[], int size)
 
                     // if left branch and it exists
                     if(j % 2 == 0 && j < size){
-                        if(j>15) //if lowest level, treat it specially (vertical line)
+                        if(j>15){ //if lowest level, treat it specially (vertical line)
+                            pad_left=8;
                             cout << setw(pad_left) << "|";
-                        else
+                        }else
                             cout << setw(pad_left) << "/";
                     // if right branch and it exists
                     }else if (j % 2 == 1 && j < size){
-                        if(j>15) //if lowest level, treat it specially (vertical line)
+                        if(j>15){ //if lowest level, treat it specially (vertical line)
+                            pad_right=6;
                             cout << setw(pad_right) << "|";
-                        else
+                        }else
                             cout << setw(pad_right) << "\\";
   
                     }
@@ -142,28 +146,30 @@ void displayQueue( int q[], int size)
         if(padding_interval-next_padding_interval <1){
             
             if(i==16)// HACK: shifts lowest level one space to the right to make it look better
-                cout << " ";
+                cout << " " << " "  << " ";
 
-            cout << setw(4) << q[i] << " ";
+            cout << setw(4) << q[i] << " " << " " << " " /*<< " " << " "*/;
         }
         else{
 
             //if there's a left branch, print the horizontal part
-            if(leftChild(i) < size)    
+            if(leftChild(i) < size){    
                 cout << setw(padding_interval) << std::string(padding_interval-next_padding_interval, '_');
-            else //otherwise, put empty spaces
+            }else{ //otherwise, put empty spaces
                 cout << setw(padding_interval) << std::string(padding_interval-next_padding_interval, ' ');
-            
+            }
 
             cout << setw(4) << q[i]; // print the element and assume width of 4
 
 
             //if there's a right branch, print the horizontal part
-            if(rightChild(i) < size)
+            if(rightChild(i) < size){
                 cout << std::string(padding_interval-next_padding_interval, '_');
-            else //otherwise, put empty spaces
+                if (i>7)
+                    cout << std::string(2, ' ');
+            }else{ //otherwise, put empty spaces
                 cout << std::string(padding_interval-next_padding_interval, ' ');
-
+            }
 
         }
 
