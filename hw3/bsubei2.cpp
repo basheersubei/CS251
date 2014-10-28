@@ -54,6 +54,10 @@ using namespace std;
 int leftChild(int);
 int rightChild(int);
 
+int getTotalLevels( int heapSize ) {
+  return log2(heapSize-1) + 1;
+}
+
 void displayQueue( int q[], int size)
 {
     //TODO actual assignment #3 code goes here
