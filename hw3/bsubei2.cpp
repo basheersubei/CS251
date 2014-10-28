@@ -90,7 +90,64 @@ struct Node {
     Node *pLeft;    // left child pointer
     Node *pRight;   // right child pointer
 };
- 
+
+// this node is meant to be used in the queue and it holds a Node struct
+struct QueueNode {   Node* pNode;   QueueNode* pNext; };
+
+// this queue holds a bunch of queue nodes
+struct Queue {
+  int size;
+  QueueNode *pHead;       // the queue node at the head (next to be popped)
+  QueueNode *pTail;    // the queue node at the tail (most recently pushed)
+
+  // copy constructor for Queue struct
+  Queue(Queue * q) : size(q->size), pHead(q->pHead), pTail(q->pTail) {}
+  Queue() : size(0), pHead(NULL), pTail(NULL) {}
+};
+
+
+
+// pushes a node onto the tail of the queue (by making a queuenode for it)
+void push(Queue * &q, Node * node) {
+
+  QueueNode *qn = new QueueNode;
+  qn->pNode = node;
+  qn->pNext = NULL;
+
+  // cout << "pushing " << node->data << endl;
+  if(q->pHead == NULL || q->pTail == NULL){
+    q->pHead = qn;
+    q->pTail = qn;
+  }else{
+    q->pTail->pNext = qn;
+  }
+
+  q->pTail = qn;
+  q->size++;
+}
+
+// pops a node from the head of the queue
+Node * pop(Queue * &q) {
+
+  QueueNode *head = q->pHead;
+  Node *node = head->pNode;
+
+  q->pHead = head->pNext;
+  q->size--;
+
+  delete head;
+  return node;
+}
+
+// returns head of the queue
+// this node should not be changed or screwed around with
+Node * peek(Queue *q) {
+  if(q->pHead == NULL)
+    return NULL;
+  return q->pHead->pNode;
+}
+
+// takes in a tree (and 0 for initial depth) and returns a depth int (how deep the tree is)
 int measureTreeDepth( Node *pRoot, int depth)
 {
   int leftmax = depth;
@@ -116,20 +173,73 @@ void displayTree( Node *pRoot)
     cout << "\n" << "As a tree this looks like: " << endl;
 
     // first, measure the depth of the tree, D
+    int depth = measureTreeDepth(pRoot, 0);
 
     // then initialize two queues Q1 and Q2 (one to hold nodes of current layer and the next to hold those of next layer)
+    // we'll just use the std::queue class for this
+    // Queue *Q1 = new Queue;
+    Queue *Q1;
+    Queue *Q2;
+
+    // push the root node on Q1
+    push(Q1, pRoot);
 
     // loop through from D to 0 (counter i)
+    for(int i=depth; i>=0; i--){
+      // cout << "i is " << i << endl;
+
+      int q_size = Q1->size;
       // for every node in Q1
+      for(int j=0; j<q_size; j++){
+        // cout << "j is " << j << endl;
+
+        // cout << Q1.front()->data << " "; Q1.pop();
         // print 2^i - 1 spaces or 2^(i+1) - 1 spaces
 
+        int number_of_spaces = 2^(i+1)-1;
+        number_of_spaces = number_of_spaces<0 ? 0 : number_of_spaces; // make sure it's not negative
+        // create a string with 2^i-1 empty spaces
+        string spaces(number_of_spaces, ' ');
+        cout << spaces; // print it out
+
         // if node not null, print null value
+        if( peek(Q1) != NULL)
+          cout << peek(Q1)->data;
+
         // if left node exists, push it to Q2, else push null
+        if(peek(Q1) != NULL && peek(Q1)->pLeft != NULL)
+          push(Q2, peek(Q1)->pLeft);
+        else
+          push(Q2, NULL);
         // if right node exists, push it to Q2, else push null
+        if(peek(Q1) != NULL && peek(Q1)->pRight != NULL)
+          push(Q2, peek(Q1)->pRight);
+        else
+          push(Q2, NULL);
 
+
+        pop(Q1);
+      }
       // copy Q2 to Q1 and delete Q2
-      // print endline
+      // delete Q2;
+      // Q2 = new queue<Node*>(Q1);
+      delete Q1;
+      *Q1 = Queue(Q2);
+      // *Q1 = *Q2;
+      // *Q1 = *Q2;
 
+      // cout << Q1->front()->data << " and " << Q2->front()->data << endl;
+      delete Q2;
+      Q2 = NULL;
+      // Q2 = Q1;
+      // Q1 = new queue<Node*>();
+
+
+
+      // print endline
+      cout << endl;
+
+    }
     cout << endl;   // make sure output buffer is flushed
 }// end displayTree(...)
  
