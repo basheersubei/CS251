@@ -116,14 +116,14 @@ void displayQueue( int q[], int size)
                     // if left branch and it exists
                     if(j % 2 == 0 && j < size){
                         if(j>15){ //if lowest level, treat it specially (vertical line)
-                            pad_left=8;
+                            pad_left=5;
                             cout << setw(pad_left) << "|";
                         }else
                             cout << setw(pad_left) << "/";
                     // if right branch and it exists
                     }else if (j % 2 == 1 && j < size){
                         if(j>15){ //if lowest level, treat it specially (vertical line)
-                            pad_right=6;
+                            pad_right=7;
                             cout << setw(pad_right) << "|";
                         }else
                             cout << setw(pad_right) << "\\";
@@ -146,9 +146,9 @@ void displayQueue( int q[], int size)
         if(padding_interval-next_padding_interval <1){
             
             if(i==16)// HACK: shifts lowest level one space to the right to make it look better
-                cout << " " << " "  << " ";
+                cout << " " << " ";
 
-            cout << setw(4) << q[i] << " " << " " << " " /*<< " " << " "*/;
+            cout << setw(4) << q[i] << " " << " " /*<< " " << " "*/;
         }
         else{
 
