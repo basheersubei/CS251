@@ -37,6 +37,7 @@
 #include <iostream>
 #include <fstream>    // For file input
 #include <cassert>    // for assertions
+#include <cstdlib>
 using namespace std;
 
 #define MAX_VERTICES  30     // one for each city
