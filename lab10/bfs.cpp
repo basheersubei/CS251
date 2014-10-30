@@ -367,15 +367,75 @@ void readInContentFromFiles(
 }//end readInContentFromFiles(...)
 
 
+// goes through that node (row) in the adjacency list and finds the number of edges or children it has 
+int numberOfChildren(int node_index, Node *graph[]){
+    int numberOfChildren = 0;
+    Node *pWalker = graph[node_index];
+    if(pWalker != NULL){
+        //number of edges for this node
+        while(pWalker->pLink != NULL){
+          pWalker = pWalker->pLink;
+          numberOfChildren++;
+        }
+        numberOfChildren++;
+    }
+
+    return numberOfChildren;
+}
+
+
+void displayReachableCitiesWithDepth(int currentVertex, Node *graph[], int visited[], int maxDepth){
+
+    // Queue pointers for breadth-first search
+    Node *pFront = NULL;  // elements are removed from front of queue
+    Node *pBack = NULL;   // elements are added to back of queue
+    Node *pTemp;
+    
+    // Add starting vertex to queue
+    addToBack( pFront, pBack, currentVertex);
+    // Mark it as visited
+    visited[ currentVertex] = 1;   // set visited value to true for this vertex
+    // displayQueue( pFront);   // For debugging
+
+    int depth = 1;
+    int elementsToDepthIncrease = 1;
+    int nextElementsToDepthIncrease = 0; //numberOfChildren( startCity, graph);
+    // int maxDepth = 2;
+
+    // While there are elements on the queue (pFront != NULL)
+    while( pFront) {
+        // Retrieve the next queue element
+        currentVertex = removeFromFront( pFront, pBack);
+        
+        // Display it and mark it as visited.
+        cout << currentVertex << " ";  // display vertex being visited
+
+        nextElementsToDepthIncrease += numberOfChildren( currentVertex, graph);
+        if (--elementsToDepthIncrease == 0) {
+            if (++depth > maxDepth) return;
+            elementsToDepthIncrease = nextElementsToDepthIncrease;
+            nextElementsToDepthIncrease = 0;
+        }
+        // Add each of its unvisited children to the back of queue
+        for( pTemp=graph[ currentVertex]; pTemp!=NULL; pTemp = pTemp->pLink) {
+            if( !visited[ pTemp->vertex]) {
+                addToBack( pFront, pBack, pTemp->vertex);
+                visited[ pTemp->vertex] = 1;   // set visited value to true for this vertex
+            }
+        }//end for( pTemp...
+        // displayQueue( pFront);   // For debugging
+        
+    }//end while( pFront)
+
+}
+
 //------------- PART ONE -----------
 // Complete the code below so that it displays all cities reachable from the start
 // city by a single flight.  You will likely need more parameters than what is 
 // currently shown below.
-void displayReachableCitiesWithOneTicket( int startCity)
+void displayReachableCitiesWithOneTicket( int currentVertex, Node *graph[], int visited[])
 {
-    // Your code here...
-
-
+    displayReachableCitiesWithDepth(currentVertex, graph, visited, 2);
 }//end displayReachableCitiesWithOneTicket(...)
 
 
@@ -383,8 +443,9 @@ void displayReachableCitiesWithOneTicket( int startCity)
 // Complete the code below so that it displays all cities reachable from the start
 // city by a TWO flights.  You will likely need more parameters than what is 
 // currently shown below. You should only display each found city one time.
-void displayReachableCitiesWithTwoTickets( int startCity)
+void displayReachableCitiesWithTwoTickets( int currentVertex, Node *graph[], int visited[])
 {
+    displayReachableCitiesWithDepth(currentVertex, graph, visited, 3);
 
 }//end displayReachableCitiesWithTwoTickets(...)
 
@@ -431,7 +492,10 @@ int main()
     cin >> startCity;
     cout << "Cities reachable from there with one ticket are: \n";
     // You will likely need to add parameters in the function call below 
-    displayReachableCitiesWithOneTicket( startCity);
+    for( int i=0; i<MAX_VERTICES; i++) {
+        visited[ i] = 0;
+    }
+    displayReachableCitiesWithOneTicket( startCity, graph, visited);
 
     // ----------- PART TWO ----------
     cout << endl
@@ -439,6 +503,12 @@ int main()
          << "If you use not only that one-way ticket, but also the second one-way \n"
          << "ticket you have, you can reach: \n";
     // You will likely need to add parameters in the function call below
-    displayReachableCitiesWithTwoTickets( startCity); 
+
+    for( int i=0; i<MAX_VERTICES; i++) {
+        visited[ i] = 0;
+    }
+    displayReachableCitiesWithTwoTickets( startCity, graph, visited); 
+
+    cout << endl;
     
 }// end main()
