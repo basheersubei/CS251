@@ -5,6 +5,8 @@
 !*lab*
 !hw*/*
 !lab*/*
+!.travis*
+!.travis/*
 
 *.out
 *.eps

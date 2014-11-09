@@ -1,0 +1,7 @@
+notifications:
+  email:
+  - basheersubei@gmail.com
+script: ./.travis/build
+language: cpp
+compiler:
+- g++
