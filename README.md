@@ -1,3 +1,3 @@
 CS251
 =====
-https://travis-ci.org/basheersubei/CS251.svg
+[![Build Status](https://travis-ci.org/basheersubei/CS251.svg)](https://travis-ci.org/basheersubei/CS251)
