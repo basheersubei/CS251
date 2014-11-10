@@ -8,12 +8,22 @@
 
 * Author: Basheer Subei
 
+* This program reads in a list of cities (a graph with undirected weighted edges),
+* and then takes in a num_of_warehouses, and tries to find the locations which that
+* num_of_warehouses will minimize the distances to all the warehouses (including
+* that same city location itself).
+
+* The program will probably use Dijkstra's algorithm to calculate the distances from
+* each city to all others. It will also use combinations sample code to calculate
+* all the combinations of cities that it will try.
+* 
+
+
+
 * I started off sample program Dijkstras.cpp
 * provided by Prof. Reed for CS 251 
 * Fall 2014 at UIC and modified it to work for the homework.
 
-* This program reads in a list of cities (a graph with undirected weighted edges)
-* 
 
 * -------------------------------------------------
 
