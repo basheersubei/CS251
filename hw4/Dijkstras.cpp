@@ -40,6 +40,7 @@
      Parent of 7 is 1
  
  */
+#include <stdio.h>
 #include <cstdlib>
 #include <iostream>
 using namespace std;
