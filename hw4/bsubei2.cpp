@@ -9,8 +9,8 @@
 * Author: Basheer Subei
 
 * This program reads in a list of cities (a graph with undirected weighted edges),
-* and then takes in a num_of_warehouses, and tries to find the locations which that
-* num_of_warehouses will minimize the distances to all the warehouses (including
+* and then takes in a max_num_of_warehouses, and tries to find the locations which that
+* max_num_of_warehouses will minimize the distances to all the warehouses (including
 * that same city location itself).
 
 * The program will probably use Dijkstra's algorithm to calculate the distances from
@@ -40,23 +40,42 @@ using std::endl;
 
 // function declarations
 void printStartSequence();
+void runAlibamazonAlgorithm(int max_num_of_warehouses);
 
 int main() {
     // print welcome message and stuff
     printStartSequence();
 
     // take the user's input and run the algorithm with it
-    int input_value;
-    while (input_value != -1) {
-        cin >> input_value;
-        if (input_value != -1) {
-            // run algorithm here
+    int max_num_of_warehouses;
+    while (max_num_of_warehouses != -1) {
+        cin >> max_num_of_warehouses;
+        if (max_num_of_warehouses != -1) {
+            // TODO(basheersubei) run algorithm here
+            runAlibamazonAlgorithm(max_num_of_warehouses);
         }
     }
 
     cout << "\n\nDone with program... Exiting!" << endl;
     return 0;
 }  // end main()
+
+void runAlibamazonAlgorithm(int max_num_of_warehouses) {
+    cout << "foo!" << endl;
+
+    // TODO(basheersubei) read in city names from file
+
+    // TODO(basheersubei) read in city distances from file and
+    // construct adjacency list (graph) from city distances
+
+    // TODO(basheersubei) run Dijkstra's algorithm to find minimum
+    // paths from each city to every other city
+
+    // TODO(basheersubei) find which warehouse combinations result
+    // in the lowest distance averages
+
+    // TODO(basheersubei) display output (in alphabetical order)
+}
 
 // prints a bunch of introduction text
 void printStartSequence() {
