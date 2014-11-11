@@ -53,19 +53,18 @@ using std::ifstream;
 // debug mode (prints out debug messages)
 #define DEBUG_MODE 1
 
-int num_vertices;
-
 // function declarations
 void printStartSequence();
 void runAlibamazonAlgorithm(int max_num_of_warehouses);
-int** readInContentFromFiles(char city_names[][ MAX_STRING_LENGTH],
-                            int &num_vertices);
+void readInContentFromFiles(int** graph,
+         char** city_names,
+         int num_vertices);
 void storeEdgeIntoGraph(int** graph,
                         int vertex1,
                         int vertex2,
                         int weight);
 void displayAdjacencyMatrix(int** graph, int num_vertices);
-
+int readNumVerticesFromFile();
 int main() {
     // print welcome message and stuff
     printStartSequence();
@@ -85,22 +84,40 @@ int main() {
 }  // end main()
 
 void runAlibamazonAlgorithm(int max_num_of_warehouses) {
-    // TODO(basheersubei) dynamically allocate all these
-    // set up data structures (graph) etc.
+    // first, we need to know how many vertices we will have
+    // so, we read in that number from the file first
+    int num_vertices = readNumVerticesFromFile();
 
-    // Array of parents representing connection into spanning tree
-    int parent[MAX_VERTICES];
-    // Number of vertices in tree
-    int num_vertices = 0;
-    // array of distance arrays (one for each starting city)
-    int distances[MAX_VERTICES][MAX_VERTICES];
+    // dynamically allocate graph, distances 2d array, and citynames array
+
+    // Graph represented by adjacency matrix, dynamically allocated
+    int** graph = new int*[num_vertices+1];
+    for (int i = 1; i < num_vertices+1; i++) {
+        graph[i] = new int[num_vertices+1];
+        for (int j = 0; j < num_vertices+1; j++) {
+            graph[i][j] = -1;  // -1 means no edges
+        }
+    }
+
+    // array of distance arrays (one for each starting city), dynamic
+    int** distances = new int*[num_vertices+1];
+    for (int i = 1; i < num_vertices+1; i++) {
+        distances[i] = new int[num_vertices+1];
+        for (int j = 0; j < num_vertices+1; j++) {
+            distances[i][j] = -1;  // -1 means no distance found
+        }
+    }
+
     // array of char arrays containing city names
-    char city_names[MAX_VERTICES][MAX_STRING_LENGTH];
+    char** city_names = new char*[num_vertices+1];
+    for (int i = 1; i < num_vertices+1; i++) {
+        city_names[i] = new char[MAX_STRING_LENGTH];
+    }
 
     // displayAdjacencyMatrix(graph, num_vertices);
     // read in city names and distances from file and
     // construct adjacency list (graph) from city distances
-    int ** graph = readInContentFromFiles(city_names, num_vertices);
+    readInContentFromFiles(graph, city_names, num_vertices);
 
     displayAdjacencyMatrix(graph, num_vertices);  // for debugging
 
@@ -133,54 +150,57 @@ void storeEdgeIntoGraph(
             int vertex2,            // Second vertex of edge being added
             int weight) {  // weight of edge to add
     // just add two entries in adjacency matrix with the weight
-    cout << vertex1 << " and " << vertex2 << " and " << weight << endl;
     graph[vertex1][vertex2] = weight;
     graph[vertex2][vertex1] = weight;
-    cout << vertex1 << " and " << vertex2 << " and " << weight << endl;
 
     // store zero distances for the edge between a vertex and itself
     graph[vertex1][vertex1] = 0;
     graph[vertex2][vertex2] = 0;
 }  // end storeEdgeIntoGraph(...)
 
-//-----------------------------------------------------------------------------
-// Read in the city names from one file and the list of distances between
-// pairs of cities from another file, storing these pairs into the adjacency
-// graph as we go.
-// taken from bfs.cpp from Prof. Reed's sample code, except it's 0-indexed not 1
-int** readInContentFromFiles(
-         char city_names[][MAX_STRING_LENGTH],  // Array of 2 char city names
-         int &num_vertices) {       // Number of vertices in graph
+int readNumVerticesFromFile() {
     ifstream inStream;                     // input file stream
     inStream.open("small_city_names.txt");
     assert(!inStream.fail() );  // make sure file open was OK
 
-    // First read the number of cities from the first line, then read
-    // the city names.
+    int num_vertices;
+    // read the number of cities from the first line
     inStream >> num_vertices;
 
+    inStream.close();
+
+    return num_vertices;
+}
+
+//-----------------------------------------------------------------------------
+// Read in the city names from one file and the list of distances between
+// pairs of cities from another file, storing these pairs into the adjacency
+// matrix graph as we go.
+// taken from bfs.cpp from Prof. Reed's sample code, heavily modified
+void readInContentFromFiles(int** graph,
+         char** city_names,  // Array of 2 char city names
+         int num_vertices) {       // Number of vertices in graph
+    ifstream inStream;                     // input file stream
+    inStream.open("small_city_names.txt");
+    assert(!inStream.fail() );  // make sure file open was OK
+
+    // to read in first line (not used, since it was done before)
+    char* junk = new char[1];
+    inStream.getline(junk, 10);  // fixes bug where it wasn't going to next line
+    delete[] junk;
+
     // Now read the city names
-    for (int i = 0; i < num_vertices; i++) {
-        inStream.getline(city_names[i], MAX_STRING_LENGTH, '\n');
+    for (int i = 1; i < num_vertices+1; i++) {
+        inStream.getline(city_names[i], MAX_STRING_LENGTH);
     }
     inStream.close();
 
-    // echo city initials (for debugging)
+    // echo city names (for debugging)
     if (DEBUG_MODE) {
-        cout << "   ";
         for (int i = 1; i < num_vertices+1; i++) {
             cout << city_names[i] << " ";
         }
         cout << endl;
-    }
-
-    // Graph represented by adjacency matrix, dynamically allocated
-    int** graph = new int*[num_vertices+1];
-    for (int i = 1; i < num_vertices+1; i++) {
-        graph[i] = new int[num_vertices+1];
-        for (int j = 0; j < num_vertices+1; j++) {
-            graph[i][j] = -1;  // -1 means no edges
-        }
     }
 
     // Now read in the distance values
@@ -199,8 +219,6 @@ int** readInContentFromFiles(
         storeEdgeIntoGraph(graph, fromCity, toCity, distance);
     }
     inStream.close();
-
-    return graph;
 }  // end readInContentFromFiles(...)
 
 // prints a bunch of introduction text
