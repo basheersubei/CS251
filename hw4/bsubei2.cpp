@@ -46,8 +46,6 @@ using std::ifstream;
 
 // Big enough to be "big" but not overflow when used in arithmetic.
 #define MAX_INT 100007
-// Max. number of vertices. 101 for 100 vertices, in case numbering starts at 1
-#define MAX_VERTICES 101
 // Max. length of city name char array
 #define MAX_STRING_LENGTH 50
 // debug mode (prints out debug messages)
@@ -113,19 +111,19 @@ void runAlibamazonAlgorithm(int max_num_of_warehouses) {
     for (int i = 1; i < num_vertices+1; i++) {
         city_names[i] = new char[MAX_STRING_LENGTH];
     }
-
-    // displayAdjacencyMatrix(graph, num_vertices);
     // read in city names and distances from file and
     // construct adjacency list (graph) from city distances
     readInContentFromFiles(graph, city_names, num_vertices);
 
-    displayAdjacencyMatrix(graph, num_vertices);  // for debugging
+    if (DEBUG_MODE)
+        displayAdjacencyMatrix(graph, num_vertices);  // for debugging
 
     // TODO(basheersubei) run Dijkstra's algorithm to find minimum
     // paths from each city to every other city
 
     // TODO(basheersubei) find which warehouse combinations result
-    // in the lowest distance averages
+    // in the lowest distance averages (which row combinations in the
+    // distances 2d array)
 
     // TODO(basheersubei) display output (in alphabetical order)
 }
