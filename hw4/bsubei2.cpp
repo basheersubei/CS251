@@ -120,12 +120,95 @@ void runAlibamazonAlgorithm(int max_num_of_warehouses) {
 
     // TODO(basheersubei) run Dijkstra's algorithm to find minimum
     // paths from each city to every other city
+    for (int i = 1; i <= num_vertices; i++)
+        findDistancesFromCity(graph, distances, i, num_vertices);
 
     // TODO(basheersubei) find which warehouse combinations result
     // in the lowest distance averages (which row combinations in the
     // distances 2d array)
 
     // TODO(basheersubei) display output (in alphabetical order)
+
+    // TODO(basheersubei) don't forget to deallocate all structures
+}
+
+
+void findDistancesFromCity(
+                           int** graph,
+                           int** distances,
+                           int start_city,
+                           int num_vertices) {
+    // Node *pTemp;                    // temporary graph node pointer
+    bool* isInTree = new bool[num_vertices];  // Marks if vertex is in the tree
+    int* distance = new int[num_vertices];  // Min distance found so far
+    int currentVertex;              // current vertex to process
+    int adjacentVertex;             // Adjacent vertex
+    int weight;                     // edge weight
+    // shortest distance of some new node from current
+    int shortest_new_distance;
+
+    // Initialize all vertices as not being in the tree, having max distance
+    for (int i = 1; i <= num_vertices; i++) {
+        isInTree[i] = false;
+        distance[i] = MAX_INT;
+    }
+
+    // Set values for starting node
+    distance[start_city] = 0;
+    currentVertex = start_city;
+
+    // main loop, continued until all vertices are handled
+    while (isInTree[currentVertex] == false) {
+        isInTree[currentVertex] = true;    // Include current vertex into tree
+
+        // Examine in turn each edge incident to the current vertex
+        // wherever graph[currentVertex][i] > 0
+        for (int adjacentVertex = 1;
+             adjacentVertex <= num_vertices;
+             adjacentVertex++) {
+            // if there's an edge from currentVertex to adjacentVertex
+            if (graph[currentVertex][adjacentVertex] > 0) {
+                // now check if this is the closest
+                weight = graph[currentVertex][adjacentVertex];
+                if (distance[adjacentVertex] >
+                    (distance[currentVertex] + weight) ) {
+                    // Store new lower-cost distance
+                    distance[ adjacentVertex] = distance[currentVertex]
+                                                + weight;
+                }
+            }
+        }
+
+        // Find next vertex to be processed. It should be the closest one
+        // not already in tree. if this doesn't get changed, it makes the
+        // while condition false
+        currentVertex = 1;
+        shortest_new_distance = MAX_INT;  // Initialize to some large number
+        // Examine each vertex in graph
+        for (int i = 1; i <= num_vertices; i++) {
+            if ((isInTree[i] == false) &&
+                (shortest_new_distance > distance[i])) {
+                // This ith vertex is not yet in tree and is closest so far
+                // set new shortest distance
+                shortest_new_distance = distance[i];
+                currentVertex = i;  // set new closest vertex
+            }
+        }  // end for( int i...
+    }  // end while( isInTre...
+
+    // Display distance from start to each other node
+    cout << "Distance from " << start_city << " to each other node is:" << endl;
+    for (int i = 1; i <= num_vertices; i++) {
+        cout << i << ": " << distance[ i] << endl;
+    }
+    cout << endl;
+
+    // set that row in distances to this distance that we found (basically
+    // the distance to all cities from start_city)
+    distances[start_city] = distance;
+
+    delete[] isInTree;
+    // delete[] distance; // this should be deleted when distances is deleted
 }
 
 //-----------------------------------------------------------------------------
