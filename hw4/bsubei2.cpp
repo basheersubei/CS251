@@ -90,25 +90,25 @@ void runAlibamazonAlgorithm(int max_num_of_warehouses) {
 
     // Graph represented by adjacency matrix, dynamically allocated
     int** graph = new int*[num_vertices+1];
-    for (int i = 1; i < num_vertices+1; i++) {
+    for (int i = 1; i <= num_vertices; i++) {
         graph[i] = new int[num_vertices+1];
-        for (int j = 0; j < num_vertices+1; j++) {
+        for (int j = 0; j <= num_vertices; j++) {
             graph[i][j] = -1;  // -1 means no edges
         }
     }
 
     // array of distance arrays (one for each starting city), dynamic
     int** distances = new int*[num_vertices+1];
-    for (int i = 1; i < num_vertices+1; i++) {
+    for (int i = 1; i <= num_vertices; i++) {
         distances[i] = new int[num_vertices+1];
-        for (int j = 0; j < num_vertices+1; j++) {
+        for (int j = 0; j <= num_vertices; j++) {
             distances[i][j] = -1;  // -1 means no distance found
         }
     }
 
     // array of char arrays containing city names
     char** city_names = new char*[num_vertices+1];
-    for (int i = 1; i < num_vertices+1; i++) {
+    for (int i = 1; i <= num_vertices; i++) {
         city_names[i] = new char[MAX_STRING_LENGTH];
     }
     // read in city names and distances from file and
@@ -131,8 +131,8 @@ void runAlibamazonAlgorithm(int max_num_of_warehouses) {
 //-----------------------------------------------------------------------------
 // Display adjacencyMatrix associated with each vertex
 void displayAdjacencyMatrix(int** graph, int num_vertices) {
-    for (int i = 1; i < num_vertices+1; i++) {
-        for (int j = 1; j < num_vertices+1; j++) {
+    for (int i = 1; i <= num_vertices; i++) {
+        for (int j = 1; j <= num_vertices; j++) {
             cout << graph[i][j] << "\t";
         }
         cout << endl;
@@ -188,14 +188,14 @@ void readInContentFromFiles(int** graph,
     delete[] junk;
 
     // Now read the city names
-    for (int i = 1; i < num_vertices+1; i++) {
+    for (int i = 1; i <= num_vertices; i++) {
         inStream.getline(city_names[i], MAX_STRING_LENGTH);
     }
     inStream.close();
 
     // echo city names (for debugging)
     if (DEBUG_MODE) {
-        for (int i = 1; i < num_vertices+1; i++) {
+        for (int i = 1; i <= num_vertices; i++) {
             cout << city_names[i] << " ";
         }
         cout << endl;
