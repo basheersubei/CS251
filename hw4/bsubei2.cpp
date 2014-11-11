@@ -61,8 +61,14 @@ void storeEdgeIntoGraph(int** graph,
                         int vertex1,
                         int vertex2,
                         int weight);
-void displayAdjacencyMatrix(int** graph, int num_vertices);
+void display2dArray(int** graph, int num_vertices);
 int readNumVerticesFromFile();
+void findDistancesFromCity(
+                           int** graph,
+                           int** distances,
+                           int start_city,
+                           int num_vertices);
+
 int main() {
     // print welcome message and stuff
     printStartSequence();
@@ -116,13 +122,15 @@ void runAlibamazonAlgorithm(int max_num_of_warehouses) {
     readInContentFromFiles(graph, city_names, num_vertices);
 
     if (DEBUG_MODE)
-        displayAdjacencyMatrix(graph, num_vertices);  // for debugging
+        display2dArray(graph, num_vertices);  // for debugging
 
     // TODO(basheersubei) run Dijkstra's algorithm to find minimum
     // paths from each city to every other city
     for (int i = 1; i <= num_vertices; i++)
         findDistancesFromCity(graph, distances, i, num_vertices);
 
+    if (DEBUG_MODE)
+        display2dArray(distances, num_vertices);  // for debugging
     // TODO(basheersubei) find which warehouse combinations result
     // in the lowest distance averages (which row combinations in the
     // distances 2d array)
@@ -211,16 +219,17 @@ void findDistancesFromCity(
     // delete[] distance; // this should be deleted when distances is deleted
 }
 
+
 //-----------------------------------------------------------------------------
 // Display adjacencyMatrix associated with each vertex
-void displayAdjacencyMatrix(int** graph, int num_vertices) {
+void display2dArray(int** graph, int num_vertices) {
     for (int i = 1; i <= num_vertices; i++) {
         for (int j = 1; j <= num_vertices; j++) {
             cout << graph[i][j] << "\t";
         }
         cout << endl;
     }
-}  // end displayAdjacencyMatrix(...)
+}  // end display2dArray(...)
 
 //-----------------------------------------------------------------------------
 // Store vertex1 into the adjacency list for vertex2, and vertex2 into the
