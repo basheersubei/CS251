@@ -147,7 +147,8 @@ void runAlibamazonAlgorithm(int max_num_of_warehouses) {
     // TODO(basheersubei) find which warehouse combinations result
     // in the lowest distance averages (which row combinations in the
     // distances 2d array)
-    findAverageForOneCity(distances, averages, num_vertices);
+    if (DEBUG_MODE)
+        findAverageForOneCity(distances, averages, num_vertices);
 
     // TODO(basheersubei) display output (in alphabetical order)
 
@@ -217,7 +218,7 @@ void findDistancesFromCity(
                            int start_city,
                            int num_vertices) {
     // Node *pTemp;                    // temporary graph node pointer
-    bool* isInTree = new bool[num_vertices+1];  // Marks if vertex is in the tree
+    bool* isInTree = new bool[num_vertices+1];  // Marks if vertex is in tree
     int* distance = new int[num_vertices+1];  // Min distance found so far
     int currentVertex;              // current vertex to process
     int adjacentVertex;             // Adjacent vertex
