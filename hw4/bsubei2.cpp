@@ -131,13 +131,19 @@ void runAlibamazonAlgorithm(int max_num_of_warehouses) {
     if (DEBUG_MODE)
         display2dArray(graph, num_vertices);  // for debugging
 
-    // TODO(basheersubei) run Dijkstra's algorithm to find minimum
+    // run Dijkstra's algorithm to find minimum
     // paths from each city to every other city
     for (int i = 1; i <= num_vertices; i++)
         findDistancesFromCity(graph, distances, i, num_vertices);
 
     if (DEBUG_MODE)
         display2dArray(distances, num_vertices);  // for debugging
+
+    // TODO(basheersubei) implement the combination finding into a
+    // smarter method whereby an optimal solution (minimum average
+    // distance is found) without having to iterate over all combinations.
+    // Look at simulated annealing for inspiration
+
     // TODO(basheersubei) find which warehouse combinations result
     // in the lowest distance averages (which row combinations in the
     // distances 2d array)
