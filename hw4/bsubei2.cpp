@@ -151,12 +151,13 @@ void runAlibamazonAlgorithm(int max_num_of_warehouses) {
     // distance is found) without having to iterate over all combinations.
     // Look at simulated annealing for inspiration
 
-    // TODO(basheersubei) find which warehouse combinations result
-    // in the lowest distance averages (which row combinations in the
-    // distances 2d array)
     if (DEBUG_MODE)
         findAverageForOneCity(distances, averages, num_vertices);
-    
+
+    // find which warehouse combinations result
+    // in the lowest distance averages (which row combinations in the
+    // distances 2d array)
+
     int v[MAX_COMBINATIONS];
     int min_indices[max_num_of_warehouses];  // remember to skip first index
     float min_average = MAX_INT;
@@ -215,6 +216,8 @@ void combinations(int v[],
         for (i = 1; i <= maxk; i++) cout << v[i] << " ";
         // cout << endl;
 
+        // TODO(basheersubei) find ways of optimizing this, at least not
+        // having to go through the entire adjacency matrix would save on time
 
         // for each combination, find its min average
         float sum = 0;
