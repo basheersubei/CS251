@@ -69,6 +69,7 @@ void findDistancesFromCity(
                            int** distances,
                            int start_city,
                            int num_vertices);
+void findAverageForOneCity(int** distances, int* averages, int num_vertices);
 
 int main() {
     // print welcome message and stuff
@@ -118,6 +119,11 @@ void runAlibamazonAlgorithm(int max_num_of_warehouses) {
     for (int i = 1; i <= num_vertices; i++) {
         city_names[i] = new char[MAX_STRING_LENGTH];
     }
+
+    int* averages = new int[num_vertices+1];
+    for (int i = 1; i <= num_vertices; i++)
+        averages[i] = MAX_INT;
+
     // read in city names and distances from file and
     // construct adjacency list (graph) from city distances
     readInContentFromFiles(graph, city_names, num_vertices);
@@ -135,13 +141,70 @@ void runAlibamazonAlgorithm(int max_num_of_warehouses) {
     // TODO(basheersubei) find which warehouse combinations result
     // in the lowest distance averages (which row combinations in the
     // distances 2d array)
+    findAverageForOneCity(distances, averages, num_vertices);
 
     // TODO(basheersubei) display output (in alphabetical order)
 
     // TODO(basheersubei) don't forget to deallocate all structures
 }
 
+void findAverageForOneCity(int** distances, int* averages, int num_vertices) {
+    for (int i = 1; i <= num_vertices; i++) {
+        int sum = 0;
+        for (int j = 1; j <= num_vertices; j++)
+            sum += distances[i][j];
+        averages[i] = sum / num_vertices;
+    }
 
+    // find the min average
+    int min_index;
+    int min = MAX_INT;
+    for (int i = 1; i <= num_vertices; i++) {
+        if (averages[i] < min) {
+            min_index = i;
+            min = averages[i];
+        }
+    }
+
+    cout << " the min is " << min << " and the index is " << min_index << endl;
+}
+
+// gives all combinations for n choose k, and places them in array v
+// example:     combinations(v, 1, 5, 1, 3);
+void combinations (int v[], int start, int n, int k, int maxk) {
+    int     i;
+    
+    /* k here counts through positions in the maxk-element v.
+     * if k > maxk, then the v is complete and we can use it.
+     */
+    if (k > maxk) {
+        /* insert code here to use combinations as you please */
+        for (i=1; i<=maxk; i++) cout << v[i] << " ";
+        cout << endl;
+        return;
+    }
+    
+    /* for this k'th element of the v, try all start..n
+     * elements in that position
+     */
+    for (i=start; i<=n; i++) {
+        
+        v[k] = i;
+        
+        /* recursively generate combinations of integers
+         * from i+1..n
+         */
+        combinations (v, i+1, n, k+1, maxk);
+    }
+}
+
+// this function takes in a graph (adjacency matrix), an empty distances 2-d
+// array, a starting city (starting node in the graph), and the dimension
+// (number of vertices in the graph). It then calculates the distances to all
+// the other vertices from the starting vertex (using Dijkstra's algorithm).
+// It changes the row in distances 2-d array for the start_city to reflect that.
+// Based off of Prof. Reed's sample code Dijkstras.cpp modified to use Adjacency
+// Matrix instead of adjacency lists.
 void findDistancesFromCity(
                            int** graph,
                            int** distances,
