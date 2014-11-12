@@ -50,6 +50,7 @@ using std::ifstream;
 #define MAX_STRING_LENGTH 50
 // debug mode (prints out debug messages)
 #define DEBUG_MODE 1
+#define TEST_DATA_FILES 0
 
 // function declarations
 void printStartSequence();
@@ -250,7 +251,12 @@ void storeEdgeIntoGraph(
 
 int readNumVerticesFromFile() {
     ifstream inStream;                     // input file stream
-    inStream.open("small_city_names.txt");
+
+    if (TEST_DATA_FILES)
+        inStream.open("small_city_names.txt");
+    else
+        inStream.open("CityNames.txt");
+
     assert(!inStream.fail() );  // make sure file open was OK
 
     int num_vertices;
@@ -271,7 +277,12 @@ void readInContentFromFiles(int** graph,
          char** city_names,  // Array of 2 char city names
          int num_vertices) {       // Number of vertices in graph
     ifstream inStream;                     // input file stream
-    inStream.open("small_city_names.txt");
+
+    if (TEST_DATA_FILES)
+        inStream.open("small_city_names.txt");
+    else
+        inStream.open("CityNames.txt");
+
     assert(!inStream.fail() );  // make sure file open was OK
 
     // to read in first line (not used, since it was done before)
@@ -294,7 +305,11 @@ void readInContentFromFiles(int** graph,
     }
 
     // Now read in the distance values
-    inStream.open("small_city_distances.txt");
+    if (TEST_DATA_FILES)
+        inStream.open("small_city_distances.txt");
+    else
+        inStream.open("CityDistances.txt");
+
     assert(!inStream.fail() );  // make sure file open was OK
 
     // First read the number of distance pairs from the first line
