@@ -69,7 +69,7 @@ void findDistancesFromCity(
                            int** distances,
                            int start_city,
                            int num_vertices);
-void findAverageForOneCity(int** distances, int* averages, int num_vertices);
+void findAverageForOneCity(int** distances, float* averages, int num_vertices);
 
 int main() {
     // print welcome message and stuff
@@ -120,7 +120,7 @@ void runAlibamazonAlgorithm(int max_num_of_warehouses) {
         city_names[i] = new char[MAX_STRING_LENGTH];
     }
 
-    int* averages = new int[num_vertices+1];
+    float* averages = new float[num_vertices+1];
     for (int i = 1; i <= num_vertices; i++)
         averages[i] = MAX_INT;
 
@@ -154,9 +154,9 @@ void runAlibamazonAlgorithm(int max_num_of_warehouses) {
     // TODO(basheersubei) don't forget to deallocate all structures
 }
 
-void findAverageForOneCity(int** distances, int* averages, int num_vertices) {
+void findAverageForOneCity(int** distances, float* averages, int num_vertices) {
     for (int i = 1; i <= num_vertices; i++) {
-        int sum = 0;
+        float sum = 0;
         for (int j = 1; j <= num_vertices; j++)
             sum += distances[i][j];
         averages[i] = sum / num_vertices;
@@ -164,7 +164,7 @@ void findAverageForOneCity(int** distances, int* averages, int num_vertices) {
 
     // find the min average
     int min_index;
-    int min = MAX_INT;
+    float min = MAX_INT;
     for (int i = 1; i <= num_vertices; i++) {
         if (averages[i] < min) {
             min_index = i;
