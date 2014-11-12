@@ -48,6 +48,7 @@ using std::ifstream;
 #define MAX_INT 100007
 // Max. length of city name char array
 #define MAX_STRING_LENGTH 50
+#define MAX_COMBINATIONS 10000
 // debug mode (prints out debug messages)
 #define DEBUG_MODE 1
 #define TEST_DATA_FILES 0
@@ -69,6 +70,12 @@ void findDistancesFromCity(
                            int** distances,
                            int start_city,
                            int num_vertices);
+void combinations(int v[],
+                  int** distances,
+                  int num_vertices,
+                  int min_indices[],
+                  float& min_average,
+                  int start, int n, int k, int maxk);
 void findAverageForOneCity(int** distances, float* averages, int num_vertices);
 
 int main() {
@@ -149,7 +156,17 @@ void runAlibamazonAlgorithm(int max_num_of_warehouses) {
     // distances 2d array)
     if (DEBUG_MODE)
         findAverageForOneCity(distances, averages, num_vertices);
+    
+    int v[MAX_COMBINATIONS];
+    int min_indices[max_num_of_warehouses];  // remember to skip first index
+    float min_average = MAX_INT;
+    combinations(v, distances, num_vertices, min_indices, min_average, 1, num_vertices, 1, max_num_of_warehouses);
 
+    cout << "min average is " << min_average << " and their indices are ";
+    for (int i = 1; i <= max_num_of_warehouses; i++) {
+        cout << min_indices[i] << " ";
+    }
+    cout << endl;
     // TODO(basheersubei) display output (in alphabetical order)
 
     // TODO(basheersubei) don't forget to deallocate all structures
@@ -176,32 +193,70 @@ void findAverageForOneCity(int** distances, float* averages, int num_vertices) {
     cout << " the min is " << min << " and the index is " << min_index << endl;
 }
 
-// gives all combinations for n choose k, and places them in array v
+// goes through all combinations for n choose k, sets indices of min combo
 // example:     combinations(v, 1, 5, 1, 3);
-void combinations (int v[], int start, int n, int k, int maxk) {
+void combinations(int v[],
+                  int** distances,
+                  int num_vertices,
+                  int min_indices[],
+                  float& min_average,
+                  int start, int n, int k, int maxk) {
     int     i;
-    
+
     /* k here counts through positions in the maxk-element v.
      * if k > maxk, then the v is complete and we can use it.
      */
     if (k > maxk) {
         /* insert code here to use combinations as you please */
-        for (i=1; i<=maxk; i++) cout << v[i] << " ";
+
+        // TODO(basheersubei) then go over all combinations and find the
+        // one with minimum average distance
+        cout << "min avg: " << min_average << ". ";
+        for (i = 1; i <= maxk; i++) cout << v[i] << " ";
+        // cout << endl;
+
+
+        // for each combination, find its min average
+        float sum = 0;
+        float average = 0;
+        // maxk tells how many cities in the combination exist
+        // go over every destination (column in distances) called dest
+            // go over every maxk and find out which distances[maxk][i] are min
+        for (int column = 1; column <= num_vertices; column++) {
+            int min_distance = MAX_INT;
+            for (int combination_index = 1;
+                 combination_index <= maxk;
+                 combination_index++) {
+                // this finds the minimum distance by picking the
+                // closest warehouse to the destination
+                if (min_distance > distances[v[combination_index]][column]) {
+                    min_distance = distances[v[combination_index]][column];
+                }
+            }
+            sum += min_distance;
+        }
+        average = sum / num_vertices;
+        cout << "average: " << average << " ";
+        if (min_average > average) {
+            cout << "smaller than min avg! saving! ";
+            min_average = average;
+            for (int index = 1; index <= maxk; index++)
+                min_indices[index] = v[index];
+        }
         cout << endl;
         return;
     }
-    
+
     /* for this k'th element of the v, try all start..n
      * elements in that position
      */
-    for (i=start; i<=n; i++) {
-        
+    for (i = start; i <= n; i++) {
         v[k] = i;
-        
+
         /* recursively generate combinations of integers
          * from i+1..n
          */
-        combinations (v, i+1, n, k+1, maxk);
+        combinations(v, distances, num_vertices, min_indices, min_average, i+1, n, k+1, maxk);
     }
 }
 
@@ -287,6 +342,7 @@ void findDistancesFromCity(
     distances[start_city] = distance;
 
     delete[] isInTree;
+
     // delete[] distance; // this should be deleted when distances is deleted
 }
 
