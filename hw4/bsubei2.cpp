@@ -217,8 +217,8 @@ void findDistancesFromCity(
                            int start_city,
                            int num_vertices) {
     // Node *pTemp;                    // temporary graph node pointer
-    bool* isInTree = new bool[num_vertices];  // Marks if vertex is in the tree
-    int* distance = new int[num_vertices];  // Min distance found so far
+    bool* isInTree = new bool[num_vertices+1];  // Marks if vertex is in the tree
+    int* distance = new int[num_vertices+1];  // Min distance found so far
     int currentVertex;              // current vertex to process
     int adjacentVertex;             // Adjacent vertex
     int weight;                     // edge weight
