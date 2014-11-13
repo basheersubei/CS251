@@ -27,6 +27,7 @@
 #include <cassert>
 #include <cstring>
 #include <cctype>
+#include <stdlib.h>
 using namespace std;
 
 // Depending on the computer, if the values below are too large,
@@ -136,25 +137,84 @@ bool wordWasFound(
           char dictionary[][ MaxLength + 1], // dictionary array
           int numberOfDictionaryWords)       // number of words in dictionary array                                     
 {
+    bool found = false;
    printf("\nWord that I am about to compare %s\n", pWord);
 	for (int i=0; i< numberOfDictionaryWords; i++) 
 	{
  		//printf("Dictionary[%d] = %s BEFORE strncmp\n", i, dictionary[i]);//EDIT THIS CODE
-                if( strncmp( pWord, strReverse(dictionary[i]), 3) == 0)  
+        if( strncmp( pWord, dictionary[i], 3) == 0)  
 		{
-			strReverse(dictionary[i]); //Reverse word back to original
- 		       // printf("Dictionary[%d] = %s AFTER strncmp\n", i, dictionary[i]);
-                	cout << dictionary[i]<< "  is rhyming with the given word. \n";
-                        return true;    // Found the word!
-                }
+            char theWord[MaxLength+1];
+            memcpy(theWord, dictionary[i], sizeof(char) * (MaxLength + 1) );
+
+            
+			       // printf("Dictionary[%d] = %s AFTER strncmp\n", i, dictionary[i]);
+        	cout << strReverse(theWord) << "  is rhyming with the given word. \n";
+            // cout << dictionary[i] << "  is rhyming with the given word. \n";
+
+                        // return true;    // Found the word!
+            found = true;
+            }
         }
-	return false;       // Did not find the word
+	return found;       // Did not find the word
     
 	//cout<< "word wasnt found. \n";
 
 }
+void sortDictionaryInReverse( 
+    char theWords[][ MaxLength+1],  // array of dictionary words
+    int limit)                      // number of words in dictionary
+{
 
+    // reverse it first
+    for (int i=0; i< limit; i++) 
+    {
+        strReverse(theWords[i]);
+    }
 
+    // then sort it
+    qsort(theWords, limit, MaxLength+1, ( int(*)(const void *, const void *)) strcmp);
+
+}
+
+bool wordWasFoundBinary( 
+          char pWord[],                      // the word for which we are searching
+          char dictionary[][ MaxLength + 1], // dictionary array
+          int numberOfDictionaryWords)       // number of words in dictionary array                                     
+{
+    bool found = false;
+   printf("\nWord that I am about to compare %s\n", pWord);
+    // for (int i=0; i< numberOfDictionaryWords; i++) 
+
+   int first = 0;
+   int last = numberOfDictionaryWords - 1;
+   int middle = (first+last)/2;
+ 
+   while( first <= last )
+   {
+    cout << "first " << first << " and last " << last << " and word " << dictionary[middle] << " and strncmp " << strncmp( pWord, dictionary[middle], 3) << endl;
+      if (  strncmp( pWord, dictionary[middle], 3) > 0 )
+         first = middle + 1;    
+      else if ( strncmp( pWord, dictionary[middle], 3) == 0 ) 
+      {
+            char theWord[MaxLength+1];
+            memcpy(theWord, dictionary[middle], sizeof(char) * (MaxLength + 1) );
+
+         cout << "found word " << strReverse(theWord) << " at location " <<  middle+1 << endl;
+         found = true;
+         break;
+      }
+      else
+         last = middle - 1;
+ 
+      middle = (first + last)/2;
+   }
+
+    return found;       // Did not find the word
+    
+    //cout<< "word wasnt found. \n";
+
+}
 //-----------------------------------------------------------------------------------
 // Main function
 int main()
@@ -164,6 +224,8 @@ int main()
 
 	// Read words from input file into dictionary array
  	readDictionary( dictionary, numberOfWords);
+
+    sortDictionaryInReverse(dictionary, numberOfWords);
 
 	// Selectively display words from dictionary array	
 	displayWords( dictionary, numberOfWords);
@@ -184,12 +246,20 @@ int main()
    cout << bWord << endl;
    
     //display appropriate message depending on whether or not the word is found
-    if ( wordWasFound( aWord, dictionary, numberOfWords) ) {
+    // if ( wordWasFound( aWord, dictionary, numberOfWords) ) {
+    if (wordWasFoundBinary(aWord, dictionary, numberOfWords)) {
       cout << "This  rhyming word IS in the dictionary. \n";
+
    }
    else {
        cout << "This rhyming word is NOT in the dictionary. \n";
    }
+
+    // qsort(dictionary, numberOfWords, MaxLength, ( int(*)(const void *, const void *)) strcmp);
+
+    // // Selectively display words from dictionary array  
+    // displayWords( dictionary, numberOfWords);
+
 
    return 0;
 }
