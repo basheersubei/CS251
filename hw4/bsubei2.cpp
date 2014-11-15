@@ -84,7 +84,7 @@ int main() {
     printStartSequence();
 
     // take the user's input and run the algorithm with it
-    int max_num_of_warehouses;
+    int max_num_of_warehouses = 1;
     while (max_num_of_warehouses != -1) {
         cout << "Please enter the maximum number of cities: " << endl;
         cin >> max_num_of_warehouses;
@@ -173,7 +173,7 @@ void runAlibamazonAlgorithm(int max_num_of_warehouses) {
     int v[MAX_COMBINATIONS];
 
     // remember to skip first index
-    int* min_indices = new int[max_num_of_warehouses];
+    int* min_indices = new int[max_num_of_warehouses+1];
     float min_average = MAX_INT;
     combinations(v,
                  distances,
@@ -202,28 +202,27 @@ void runAlibamazonAlgorithm(int max_num_of_warehouses) {
     }
 
     cout << endl;
-    // TODO(basheersubei) don't forget to deallocate all structures
 
     // deallocate what's inside graph and graph itself
     for (int i = 1; i <= num_vertices; i++) {
         delete[] graph[i];
     }
-    delete graph;
+    delete[] graph;
 
     // deallocate what's inside distances and distances itself
     for (int i = 1; i <= num_vertices; i++) {
         delete[] distances[i];
     }
-    delete distances;
+    delete[] distances;
 
     // deallocate what's inside city_names and city_names itself
     for (int i = 1; i <= num_vertices; i++) {
         delete[] city_names[i];
     }
-    delete city_names;
+    delete[] city_names;
 
     // deallocate averages
-    delete averages;
+    delete[] averages;
 }
 
 void findAverageForOneCity(int** distances, float* averages, int num_vertices) {
