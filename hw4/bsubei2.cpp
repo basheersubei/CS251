@@ -171,9 +171,19 @@ void runAlibamazonAlgorithm(int max_num_of_warehouses) {
     // distances 2d array)
 
     int v[MAX_COMBINATIONS];
-    int* min_indices = new int[max_num_of_warehouses];  // remember to skip first index
+
+    // remember to skip first index
+    int* min_indices = new int[max_num_of_warehouses];
     float min_average = MAX_INT;
-    combinations(v, distances, num_vertices, min_indices, min_average, 1, num_vertices, 1, max_num_of_warehouses);
+    combinations(v,
+                 distances,
+                 num_vertices,
+                 min_indices,
+                 min_average,
+                 1,
+                 num_vertices,
+                 1,
+                 max_num_of_warehouses);
 
     // cout << "min average is " << min_average << " and their indices are ";
     // for (int i = 1; i <= max_num_of_warehouses; i++) {
