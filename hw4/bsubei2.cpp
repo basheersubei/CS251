@@ -77,6 +77,7 @@ void combinations(int v[],
                   float& min_average,
                   int start, int n, int k, int maxk);
 void findAverageForOneCity(int** distances, float* averages, int num_vertices);
+void printTableHeader();
 
 int main() {
     // print welcome message and stuff
@@ -85,10 +86,12 @@ int main() {
     // take the user's input and run the algorithm with it
     int max_num_of_warehouses;
     while (max_num_of_warehouses != -1) {
+        cout << "Please enter the maximum number of cities: " << endl;
         cin >> max_num_of_warehouses;
         if (max_num_of_warehouses != -1) {
-            // TODO(basheersubei) run algorithm here
-            runAlibamazonAlgorithm(max_num_of_warehouses);
+            printTableHeader();
+                // TODO(basheersubei) run algorithm here
+                runAlibamazonAlgorithm(i);
         }
     }
 
@@ -135,6 +138,13 @@ void runAlibamazonAlgorithm(int max_num_of_warehouses) {
     // construct adjacency list (graph) from city distances
     readInContentFromFiles(graph, city_names, num_vertices);
 
+    // echo city names (for debugging)
+    if (DEBUG_MODE) {
+        for (int i = 1; i <= num_vertices; i++) {
+            cout << "cityname[" << i << "] is " << city_names[i] << endl;
+        }
+    }
+
     if (DEBUG_MODE)
         display2dArray(graph, num_vertices);  // for debugging
 
@@ -163,13 +173,23 @@ void runAlibamazonAlgorithm(int max_num_of_warehouses) {
     float min_average = MAX_INT;
     combinations(v, distances, num_vertices, min_indices, min_average, 1, num_vertices, 1, max_num_of_warehouses);
 
-    cout << "min average is " << min_average << " and their indices are ";
-    for (int i = 1; i <= max_num_of_warehouses; i++) {
-        cout << min_indices[i] << " ";
-    }
-    cout << endl;
+    // cout << "min average is " << min_average << " and their indices are ";
+    // for (int i = 1; i <= max_num_of_warehouses; i++) {
+    //     cout << min_indices[i] << " ";
+    // }
+    // cout << endl;
     // TODO(basheersubei) display output (in alphabetical order)
+    cout << " " << max_num_of_warehouses;
+    cout << "\t\t" << min_average;
+    cout << "\t\t";
+    for (int i = 0; i < max_num_of_warehouses; i++) {
+        cout << city_names[min_indices[i+1]];
+        if (i != max_num_of_warehouses-1) {
+            cout << " and ";
+        }
+    }
 
+    cout << endl;
     // TODO(basheersubei) don't forget to deallocate all structures
 }
 
@@ -191,7 +211,8 @@ void findAverageForOneCity(int** distances, float* averages, int num_vertices) {
         }
     }
 
-    cout << " the min is " << min << " and the index is " << min_index << endl;
+    if (DEBUG_MODE)
+        cout << " the min is " << min << " and the index is " << min_index << endl;
 }
 
 // goes through all combinations for n choose k, sets indices of min combo
@@ -212,8 +233,10 @@ void combinations(int v[],
 
         // TODO(basheersubei) then go over all combinations and find the
         // one with minimum average distance
-        cout << "min avg: " << min_average << ". ";
-        for (i = 1; i <= maxk; i++) cout << v[i] << " ";
+        if (DEBUG_MODE) {
+            cout << "min avg: " << min_average << ". ";
+            for (i = 1; i <= maxk; i++) cout << v[i] << " ";
+        }
         // cout << endl;
 
         // TODO(basheersubei) find ways of optimizing this, at least not
@@ -239,14 +262,18 @@ void combinations(int v[],
             sum += min_distance;
         }
         average = sum / num_vertices;
-        cout << "average: " << average << " ";
+        if(DEBUG_MODE)
+            cout << "average: " << average << " ";
+        
         if (min_average > average) {
-            cout << "smaller than min avg! saving! ";
+            if(DEBUG_MODE)
+                cout << "smaller than min avg! saving! ";
             min_average = average;
             for (int index = 1; index <= maxk; index++)
                 min_indices[index] = v[index];
         }
-        cout << endl;
+        if(DEBUG_MODE)
+            cout << endl;
         return;
     }
 
@@ -334,12 +361,13 @@ void findDistancesFromCity(
     }  // end while( isInTre...
 
     // Display distance from start to each other node
-    cout << "Distance from " << start_city << " to each other node is:" << endl;
-    for (int i = 1; i <= num_vertices; i++) {
-        cout << i << ": " << distance[ i] << endl;
+    if (DEBUG_MODE) {
+        cout << "Distance from " << start_city << " to each other node is:" << endl;
+        for (int i = 1; i <= num_vertices; i++) {
+            cout << i << ": " << distance[ i] << endl;
+        }
+        cout << endl;
     }
-    cout << endl;
-
     // set that row in distances to this distance that we found (basically
     // the distance to all cities from start_city)
     distances[start_city] = distance;
@@ -415,8 +443,10 @@ void readInContentFromFiles(int** graph,
     assert(!inStream.fail() );  // make sure file open was OK
 
     // to read in first line (not used, since it was done before)
-    char* junk = new char[1];
+    char* junk = new char[10];
     inStream.getline(junk, 10);  // fixes bug where it wasn't going to next line
+    if (DEBUG_MODE)
+        cout << "junk is " << junk << endl;
     delete[] junk;
 
     // Now read the city names
@@ -424,14 +454,6 @@ void readInContentFromFiles(int** graph,
         inStream.getline(city_names[i], MAX_STRING_LENGTH);
     }
     inStream.close();
-
-    // echo city names (for debugging)
-    if (DEBUG_MODE) {
-        for (int i = 1; i <= num_vertices; i++) {
-            cout << city_names[i] << " ";
-        }
-        cout << endl;
-    }
 
     // Now read in the distance values
     if (TEST_DATA_FILES)
@@ -454,6 +476,12 @@ void readInContentFromFiles(int** graph,
     }
     inStream.close();
 }  // end readInContentFromFiles(...)
+
+void printTableHeader() {
+    cout << "\t\tAvg City\n"\
+    << " #\t\tDistance\tCities\n"\
+    <<  "---\t\t---------\t--------------------" << endl;
+}
 
 // prints a bunch of introduction text
 void printStartSequence() {
