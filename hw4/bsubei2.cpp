@@ -90,8 +90,10 @@ int main() {
         cin >> max_num_of_warehouses;
         if (max_num_of_warehouses != -1) {
             printTableHeader();
+            for (int i = 1; i <= max_num_of_warehouses; i++) {
                 // TODO(basheersubei) run algorithm here
                 runAlibamazonAlgorithm(i);
+            }
         }
     }
 
