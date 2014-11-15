@@ -34,6 +34,7 @@
 #include <iostream>
 #include <fstream>    // For file input
 #include <cassert>    // for assertions
+#include <cstring>
 
 
 // avoiding using namespace, instead explicitly stating using using
@@ -185,17 +186,26 @@ void runAlibamazonAlgorithm(int max_num_of_warehouses) {
                  1,
                  max_num_of_warehouses);
 
-    // cout << "min average is " << min_average << " and their indices are ";
-    // for (int i = 1; i <= max_num_of_warehouses; i++) {
-    //     cout << min_indices[i] << " ";
-    // }
-    // cout << endl;
-    // TODO(basheersubei) display output (in alphabetical order)
+
+    char sorted_city_names[max_num_of_warehouses][MAX_STRING_LENGTH];
+    for (int i = 0; i < max_num_of_warehouses; i++) {
+        strcpy(sorted_city_names[i], city_names[min_indices[i+1]]);
+    }
+
+    qsort(sorted_city_names,
+          max_num_of_warehouses,
+          MAX_STRING_LENGTH,
+          ( int(*)(const void *, const void *)) strcmp);
+
+    for (int i = 0; i < max_num_of_warehouses; i++) {
+        // cout << "cityname[" << i << "] is " << sorted_city_names[i] << endl;
+    }
+
     cout << " " << max_num_of_warehouses;
     cout << "\t\t" << min_average;
     cout << "\t\t";
     for (int i = 0; i < max_num_of_warehouses; i++) {
-        cout << city_names[min_indices[i+1]];
+        cout << sorted_city_names[i];
         if (i != max_num_of_warehouses-1) {
             cout << " and ";
         }
