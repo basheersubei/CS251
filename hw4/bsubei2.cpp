@@ -452,6 +452,10 @@ void readInContentFromFiles(int** graph,
     // Now read the city names
     for (int i = 1; i <= num_vertices; i++) {
         inStream.getline(city_names[i], MAX_STRING_LENGTH);
+        // now get rid of the return carriage char
+        char *s = city_names[i];
+        while (*s && *s != '\n' && *s != '\r') s++;
+        *s = 0;
     }
     inStream.close();
 
