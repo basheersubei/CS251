@@ -476,7 +476,7 @@ void readInContentFromFiles(int** graph,
     if (TEST_DATA_FILES)
         inStream.open("small_city_distances.txt");
     else
-        inStream.open("CityDistances.txt");
+        inStream.open("CityDistancesSanitized.txt");
 
     assert(!inStream.fail() );  // make sure file open was OK
 
