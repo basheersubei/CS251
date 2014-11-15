@@ -193,6 +193,27 @@ void runAlibamazonAlgorithm(int max_num_of_warehouses) {
 
     cout << endl;
     // TODO(basheersubei) don't forget to deallocate all structures
+
+    // deallocate what's inside graph and graph itself
+    for (int i = 1; i <= num_vertices; i++) {
+        delete[] graph[i];
+    }
+    delete graph;
+
+    // deallocate what's inside distances and distances itself
+    for (int i = 1; i <= num_vertices; i++) {
+        delete[] distances[i];
+    }
+    delete distances;
+
+    // deallocate what's inside city_names and city_names itself
+    for (int i = 1; i <= num_vertices; i++) {
+        delete[] city_names[i];
+    }
+    delete city_names;
+
+    // deallocate averages
+    delete averages;
 }
 
 void findAverageForOneCity(int** distances, float* averages, int num_vertices) {
