@@ -50,7 +50,7 @@ using std::ifstream;
 #define MAX_STRING_LENGTH 50
 #define MAX_COMBINATIONS 10000
 // debug mode (prints out debug messages)
-#define DEBUG_MODE 1
+#define DEBUG_MODE 0
 #define TEST_DATA_FILES 0
 
 // function declarations
@@ -213,8 +213,10 @@ void findAverageForOneCity(int** distances, float* averages, int num_vertices) {
         }
     }
 
-    if (DEBUG_MODE)
-        cout << " the min is " << min << " and the index is " << min_index << endl;
+    if (DEBUG_MODE) {
+        cout << " the min is " << min
+        << " and the index is " << min_index << endl;
+    }
 }
 
 // goes through all combinations for n choose k, sets indices of min combo
@@ -264,17 +266,17 @@ void combinations(int v[],
             sum += min_distance;
         }
         average = sum / num_vertices;
-        if(DEBUG_MODE)
+        if (DEBUG_MODE)
             cout << "average: " << average << " ";
-        
+
         if (min_average > average) {
-            if(DEBUG_MODE)
+            if (DEBUG_MODE)
                 cout << "smaller than min avg! saving! ";
             min_average = average;
             for (int index = 1; index <= maxk; index++)
                 min_indices[index] = v[index];
         }
-        if(DEBUG_MODE)
+        if (DEBUG_MODE)
             cout << endl;
         return;
     }
@@ -288,7 +290,15 @@ void combinations(int v[],
         /* recursively generate combinations of integers
          * from i+1..n
          */
-        combinations(v, distances, num_vertices, min_indices, min_average, i+1, n, k+1, maxk);
+        combinations(v,
+                     distances,
+                     num_vertices,
+                     min_indices,
+                     min_average,
+                     i+1,
+                     n,
+                     k+1,
+                     maxk);
     }
 }
 
@@ -364,7 +374,8 @@ void findDistancesFromCity(
 
     // Display distance from start to each other node
     if (DEBUG_MODE) {
-        cout << "Distance from " << start_city << " to each other node is:" << endl;
+        cout << "Distance from " << start_city\
+            << " to each other node is:" << endl;
         for (int i = 1; i <= num_vertices; i++) {
             cout << i << ": " << distance[ i] << endl;
         }
