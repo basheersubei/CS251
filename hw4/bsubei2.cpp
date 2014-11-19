@@ -231,6 +231,8 @@ void runAlibamazonAlgorithm(int max_num_of_warehouses) {
     }
     delete[] city_names;
 
+    delete[] min_indices;
+
     // deallocate averages
     delete[] averages;
 }
@@ -423,11 +425,14 @@ void findDistancesFromCity(
     }
     // set that row in distances to this distance that we found (basically
     // the distance to all cities from start_city)
-    distances[start_city] = distance;
+
+    // we need to copy them over, because we have to delete distance array,
+    // which we dynamically allocated only within this function.
+    memcpy(&distances[start_city][1], &distance[1], num_vertices * sizeof(int));
 
     delete[] isInTree;
 
-    // delete[] distance; // this should be deleted when distances is deleted
+    delete[] distance;
 }
 
 
