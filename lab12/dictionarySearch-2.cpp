@@ -193,9 +193,9 @@ bool wordWasFoundBinary(
    while( first <= last )
    {
     cout << "first " << first << " and last " << last << " and word " << dictionary[middle] << " and strncmp " << strncmp( pWord, dictionary[middle], 3) << endl;
-      if (  strncmp( pWord, dictionary[middle], 3) > 0 )
+      if (  strncmp( pWord, dictionary[middle], strlen(pWord)) > 0 )
          first = middle + 1;    
-      else if ( strncmp( pWord, dictionary[middle], 3) == 0 ) 
+      else if ( strncmp( pWord, dictionary[middle], strlen(pWord)) == 0 ) 
       {
             char theWord[MaxLength+1];
             memcpy(theWord, dictionary[middle], sizeof(char) * (MaxLength + 1) );
