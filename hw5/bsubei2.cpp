@@ -34,9 +34,20 @@ using std::ifstream;
 // debug mode (prints out debug messages)
 #define DEBUG_MODE 0
 #define TEST_DATA_FILES 0
+#define MAX_LINE_LENGTH 10000
+
+// defines each node in the trie
+struct Node {
+    char c;  // the char this node holds
+    bool is_word;  // indicates whether it's a complete word
+    Node* letters[26];  // child pointers to each letter
+};
 
 // function declarations
 void printStartSequence();
+void readDictionary(Node* &word_trie);
+char * strReverse(char *str);
+void storeWordInTrie(char *word, int size, Node* trie);
 
 int main() {
     // print welcome message and stuff
@@ -45,6 +56,63 @@ int main() {
     cout << endl << endl << "Done with program... Exiting!" << endl;
     return 0;
 }  // end main()
+
+// read dictionary.txt file and fill up the word trie
+// with the words in reverse order
+void readDictionary(Node* &word_trie) {
+    ifstream inStream;                     // input file stream
+
+    if (TEST_DATA_FILES)
+        inStream.open("test-dictionary.txt");
+    else
+        inStream.open("dictionary.txt");
+
+    char tempString[MAX_LINE_LENGTH];         // stores a single string
+    int size;                            // string size
+
+    assert(!inStream.fail());  // make sure file open was OK
+
+    cout << "\n Reading dictionary file\n";
+
+    while ( inStream >> tempString ) {
+        // get the size of the string
+        size = strlen(tempString);
+
+        // convertToLowerCase(tempString, size);  // convert word to lower case
+
+        // reverse the string
+        strReverse(tempString);
+
+        // check if valid (all alphanumeric chars)
+        // store it in trie
+        for (int i = 0; i < size; i++) {
+            if (isalpha(tempString[i])) {
+                storeWordInTrie(tempString, size, word_trie);
+            }
+        }
+    }
+
+    inStream.close();  // close the input file stream
+}
+
+// stores word (with given size) into trie
+void storeWordInTrie(char *word, int size, Node* trie) {
+    //
+}
+
+// Reverses the string Note:changing the orginal string
+char * strReverse(char *str) {
+    char *p1, *p2;
+
+    if (!str || !*str)
+        return str;
+    for (p1 = str, p2 = str + strlen(str) - 1; p2 > p1; ++p1, --p2) {
+        *p1 ^= *p2;
+        *p2 ^= *p1;
+        *p1 ^= *p2;
+    }
+    return str;
+}
 
 // prints a bunch of introduction text
 void printStartSequence() {
