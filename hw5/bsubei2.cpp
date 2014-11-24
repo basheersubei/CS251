@@ -52,6 +52,11 @@ char * strReverse(char *str);
 void storeWordInTrie(char *word, int size, Node* trie);
 int askForSuffix(char* suffix);
 void searchTrieForSuffix(Node* word_trie, char* suffix, int length);
+void searchWordInTrie(char *word,
+    int size,
+    Node* trie,
+    int &how_many_found,
+    char *word_so_far);
 void deleteTrieWords(Node* word_trie);
 
 int main() {
@@ -180,6 +185,59 @@ int askForSuffix(char* suffix) {
 
     return strlen(suffix);
     // TODO(basheersubei) validate user input
+}
+
+// searches for word (with given size) into trie.
+// it does this recursively char by char and calls itself with
+// the same word except first character and throws in child pointer as well.
+// analogous to storeWordInTrie(), except it keeps track of how many are found
+// and keeps track of the word built so far (word_so_far grows as word shrinks)
+void searchWordInTrie(char *word,
+    int size,
+    Node* trie,
+    int &how_many_found,
+    char *word_so_far) {
+    // debugging
+    // if (DEBUG_MODE)
+    //     cout << word[0] << endl;
+
+    // get the first char in the word (or sub-word as is thrown recursively)
+    char first_char = word[0];
+    char c[2] = {first_char, '\0'};
+
+    int first_char_index = (int) (first_char - ASCII_OFFSET);
+
+    // check if this node is a word, and store (or print) it if it is.
+    if (trie->is_word) {
+        // increment counter
+        how_many_found++;
+        // TODO(basheersubei) store word and print it
+        if (DEBUG_MODE)
+            cout << "found word " << word_so_far << endl;
+    }
+
+    // if this is the first time this function is called (not recursive yet)
+    if (word_so_far[0] == ' ') {
+        word_so_far = c;  // just set the word to be the first character
+    } else {
+        strcat(word_so_far, c);  // else, add the first char at the end
+    }
+
+    if (DEBUG_MODE)
+        cout << word_so_far << endl;
+    // check if this node's pointer to first_char exists.
+    // if it exists, traverse deeper. Otherwise, print not found.
+    if (trie->letters[first_char_index] != NULL) {
+        searchWordInTrie(&word[1],
+            --size,
+            trie->letters[first_char_index],
+            how_many_found,
+            word_so_far);
+    } else {
+        // once we find the word suffix, do a depth-first traversal
+        // and store them all
+        // TODO(basheersubei)
+    }
 }
 
 // stores word (with given size) into trie.
