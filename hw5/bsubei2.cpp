@@ -182,6 +182,7 @@ int askForSuffix(char* suffix) {
     cout << "Enter the suffix to find rhyming words: ";
 
     cin >> suffix;
+    strReverse(suffix);
 
     return strlen(suffix);
     // TODO(basheersubei) validate user input
