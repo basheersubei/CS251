@@ -48,6 +48,8 @@ void printStartSequence();
 void readDictionary(Node* &word_trie);
 char * strReverse(char *str);
 void storeWordInTrie(char *word, int size, Node* trie);
+void askForSuffix(char* suffix);
+void searchTrieForSuffix(Node* word_trie, char* suffix);
 
 int main() {
     // print welcome message and stuff
@@ -57,8 +59,17 @@ int main() {
 
     readDictionary(word_trie);
 
-    cout << endl << endl << "Done with program... Exiting!" << endl;
+    // take in user input (word suffix).
+    char suffix[MAX_LINE_LENGTH];
+    askForSuffix(suffix);
 
+    if (DEBUG_MODE)
+        cout << suffix << endl;
+
+    // TODO(basheersubei) search the trie for suffix and print results
+    searchTrieForSuffix(word_trie, suffix);
+
+    cout << endl << endl << "Done with program... Exiting!" << endl;
 
     // now we're done. Let's clean up and free memory
 
@@ -68,6 +79,22 @@ int main() {
 
     return 0;
 }  // end main()
+
+// counts how many and which words in the dictionary exist with that suffix
+void searchTrieForSuffix(Node* word_trie, char* suffix) {
+    // keep track of how many words were found so far in the trie
+    int how_many_found = 0;
+    // TODO(basheersubei) actually search for the suffix in the trie
+    // store how many you found and which ones
+
+    // print out results
+    if (how_many_found > 0) {
+        cout << "Found " << how_many_found << " words which are:" << endl;
+    } else {
+        cout << "Found no words with that suffix!" << endl;
+        return;  // leave the function as there is nothing left to do
+    }
+}
 
 // read dictionary.txt file and fill up the word trie
 // with the words in reverse order
@@ -114,6 +141,15 @@ void readDictionary(Node* &word_trie) {
     }  // end while (reads each word line by line)
 
     inStream.close();  // close the input file stream
+}
+
+// asks user for suffix and returns it as C-string
+void askForSuffix(char* suffix) {
+    cout << "Enter the suffix to find rhyming words: ";
+
+    cin >> suffix;
+
+    // TODO(basheersubei) validate user input
 }
 
 // stores word (with given size) into trie
