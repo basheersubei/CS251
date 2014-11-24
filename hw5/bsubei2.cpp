@@ -32,8 +32,8 @@ using std::ifstream;
 // preprocessor definitions
 
 // debug mode (prints out debug messages)
-#define DEBUG_MODE 0
-#define TEST_DATA_FILES 0
+#define DEBUG_MODE 1
+#define TEST_DATA_FILES 1
 #define MAX_LINE_LENGTH 10000
 
 // defines each node in the trie
@@ -72,11 +72,14 @@ void readDictionary(Node* &word_trie) {
 
     assert(!inStream.fail());  // make sure file open was OK
 
-    cout << "\n Reading dictionary file\n";
+    cout << "\n Reading dictionary file...\n";
 
     while ( inStream >> tempString ) {
         // get the size of the string
         size = strlen(tempString);
+
+        if (DEBUG_MODE)
+            cout << "word is " << tempString << " and size is " << size << endl;
 
         // convertToLowerCase(tempString, size);  // convert word to lower case
 
@@ -88,9 +91,15 @@ void readDictionary(Node* &word_trie) {
         for (int i = 0; i < size; i++) {
             if (isalpha(tempString[i])) {
                 storeWordInTrie(tempString, size, word_trie);
+            } else {
+                if (DEBUG_MODE) {
+                    cout << "word " << strReverse(tempString)
+                        << " is not alphanumeric and will be rejected!" << endl;
+                }
+                break;  // since word is not valid, abort
             }
-        }
-    }
+        }  // end for (reads each char in the current word)
+    }  // end while (reads each word line by line)
 
     inStream.close();  // close the input file stream
 }
