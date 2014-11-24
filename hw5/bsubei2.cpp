@@ -53,7 +53,19 @@ int main() {
     // print welcome message and stuff
     printStartSequence();
 
+    Node *word_trie = new Node;
+
+    readDictionary(word_trie);
+
     cout << endl << endl << "Done with program... Exiting!" << endl;
+
+
+    // now we're done. Let's clean up and free memory
+
+    // TODO(basheersubei) delete all nodes in trie
+    // now delete word_trie pointer
+    delete word_trie;
+
     return 0;
 }  // end main()
 
