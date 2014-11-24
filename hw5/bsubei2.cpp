@@ -35,27 +35,37 @@ using std::ifstream;
 #define DEBUG_MODE 1
 #define TEST_DATA_FILES 1
 #define MAX_LINE_LENGTH 10000
+#define ASCII_OFFSET 97
+#define NUMBER_OF_CHILDREN 26
 
 // defines each node in the trie
 struct Node {
     char c;  // the char this node holds
     bool is_word;  // indicates whether it's a complete word
-    Node* letters[26];  // child pointers to each letter
+    Node* letters[NUMBER_OF_CHILDREN];  // child pointers to each letter
 };
 
 // function declarations
 void printStartSequence();
-void readDictionary(Node* &word_trie);
+void readDictionary(Node* word_trie);
 char * strReverse(char *str);
 void storeWordInTrie(char *word, int size, Node* trie);
 void askForSuffix(char* suffix);
 void searchTrieForSuffix(Node* word_trie, char* suffix);
+void deleteTrieWords(Node* word_trie);
 
 int main() {
     // print welcome message and stuff
     printStartSequence();
 
     Node *word_trie = new Node;
+    word_trie->c = '-';  // dash indicates root node
+    word_trie->is_word = false;
+    // we have to initialize the child pointers to NULL
+    // or valgrind complains about partially initialized variables
+    // in other scopes (in readDictionary and such)
+    for (int i = 0; i < NUMBER_OF_CHILDREN; i++)
+        word_trie->letters[i] = NULL;
 
     readDictionary(word_trie);
 
@@ -73,12 +83,21 @@ int main() {
 
     // now we're done. Let's clean up and free memory
 
-    // TODO(basheersubei) delete all nodes in trie
-    // now delete word_trie pointer
-    delete word_trie;
+    // delete all nodes in trie
+    deleteTrieWords(word_trie);
 
     return 0;
 }  // end main()
+
+// do a depth-first traversal of the entire trie and deallocate all nodes
+void deleteTrieWords(Node* word_trie) {
+    for (int i = 0; i < NUMBER_OF_CHILDREN; i++) {
+        if (word_trie->letters[i] != NULL)
+            deleteTrieWords(word_trie->letters[i]);
+    }
+
+    delete word_trie;
+}
 
 // counts how many and which words in the dictionary exist with that suffix
 void searchTrieForSuffix(Node* word_trie, char* suffix) {
@@ -87,18 +106,20 @@ void searchTrieForSuffix(Node* word_trie, char* suffix) {
     // TODO(basheersubei) actually search for the suffix in the trie
     // store how many you found and which ones
 
-    // print out results
+    // print out how many were found
     if (how_many_found > 0) {
         cout << "Found " << how_many_found << " words which are:" << endl;
     } else {
         cout << "Found no words with that suffix!" << endl;
         return;  // leave the function as there is nothing left to do
     }
+
+    // TODO(basheersubei) print out the actual words found
 }
 
 // read dictionary.txt file and fill up the word trie
 // with the words in reverse order
-void readDictionary(Node* &word_trie) {
+void readDictionary(Node* word_trie) {
     ifstream inStream;                     // input file stream
 
     if (TEST_DATA_FILES)
@@ -107,11 +128,11 @@ void readDictionary(Node* &word_trie) {
         inStream.open("dictionary.txt");
 
     char tempString[MAX_LINE_LENGTH];         // stores a single string
-    int size;                            // string size
+    int size = 0;                            // string size
 
     assert(!inStream.fail());  // make sure file open was OK
 
-    cout << "\n Reading dictionary file...\n";
+    cout << "\nReading dictionary file...\n";
 
     while ( inStream >> tempString ) {
         // get the size of the string
@@ -128,9 +149,7 @@ void readDictionary(Node* &word_trie) {
         // check if valid (all alphanumeric chars)
         // store it in trie
         for (int i = 0; i < size; i++) {
-            if (isalpha(tempString[i])) {
-                storeWordInTrie(tempString, size, word_trie);
-            } else {
+            if (!isalpha(tempString[i])) {
                 if (DEBUG_MODE) {
                     cout << "word " << strReverse(tempString)
                         << " is not alphanumeric and will be rejected!" << endl;
@@ -138,6 +157,8 @@ void readDictionary(Node* &word_trie) {
                 break;  // since word is not valid, abort
             }
         }  // end for (reads each char in the current word)
+
+        storeWordInTrie(tempString, size, word_trie);
     }  // end while (reads each word line by line)
 
     inStream.close();  // close the input file stream
@@ -152,9 +173,47 @@ void askForSuffix(char* suffix) {
     // TODO(basheersubei) validate user input
 }
 
-// stores word (with given size) into trie
+// stores word (with given size) into trie.
+// it does this recursively char by char and calls itself with
+// the same word except first character and throws in child pointer as well
 void storeWordInTrie(char *word, int size, Node* trie) {
-    //
+    // debugging
+    if (DEBUG_MODE)
+        cout << word[0];
+
+    // end the recursion once the word is fully stored
+    if (size == 0) {
+        if (DEBUG_MODE)
+            cout << " done!" << endl;
+
+        // now we're done
+        return;
+    }
+
+    // get the first char in the word (or sub-word as is thrown recursively)
+    char first_char = word[0];
+    int first_char_index = (int) (first_char - ASCII_OFFSET);
+
+    // check if this node's pointer to first_char exists.
+    // if not, then add it.
+    if (trie->letters[first_char_index] == NULL) {
+        // create new node and initialize with values
+        Node* added_node = new Node;
+        trie->letters[first_char_index] = added_node;
+        trie->letters[first_char_index]->c = first_char;
+        trie->letters[first_char_index]->is_word = false;
+        // we have to initialize child pointers to NULL to avoid
+        // partially initialized valgrind warning
+        for (int i = 0; i < NUMBER_OF_CHILDREN; i++)
+            trie->letters[first_char_index]->letters[i] = NULL;
+    }
+    
+    // don't forget to mark this node as the end of the word!
+    if (size == 1)
+        trie->letters[first_char_index]->is_word = true;
+
+    // now traverse recursively to next level
+    storeWordInTrie(&word[1], --size, trie->letters[first_char_index]);
 }
 
 // Reverses the string Note:changing the orginal string
