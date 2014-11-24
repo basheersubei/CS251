@@ -50,8 +50,8 @@ void printStartSequence();
 void readDictionary(Node* word_trie);
 char * strReverse(char *str);
 void storeWordInTrie(char *word, int size, Node* trie);
-void askForSuffix(char* suffix);
-void searchTrieForSuffix(Node* word_trie, char* suffix);
+int askForSuffix(char* suffix);
+void searchTrieForSuffix(Node* word_trie, char* suffix, int length);
 void deleteTrieWords(Node* word_trie);
 
 int main() {
@@ -71,13 +71,17 @@ int main() {
 
     // take in user input (word suffix).
     char suffix[MAX_LINE_LENGTH];
-    askForSuffix(suffix);
+    int suffix_length = askForSuffix(suffix);
+
+    if (suffix_length <= 0) {
+        cout << "Error taking in suffix!" << endl;
+    }
 
     if (DEBUG_MODE)
         cout << suffix << endl;
 
     // TODO(basheersubei) search the trie for suffix and print results
-    searchTrieForSuffix(word_trie, suffix);
+    searchTrieForSuffix(word_trie, suffix, suffix_length);
 
     cout << endl << endl << "Done with program... Exiting!" << endl;
 
@@ -100,14 +104,18 @@ void deleteTrieWords(Node* word_trie) {
 }
 
 // counts how many and which words in the dictionary exist with that suffix
-void searchTrieForSuffix(Node* word_trie, char* suffix) {
+void searchTrieForSuffix(Node* word_trie, char* suffix, int length) {
     // keep track of how many words were found so far in the trie
     int how_many_found = 0;
-    // TODO(basheersubei) actually search for the suffix in the trie
-    // store how many you found and which ones
+    char empty_char[] = " ";
+    // actually search for the suffix in the trie
+    // @TODO(basheersubei) store how many you found and which ones
+    searchWordInTrie(suffix, length, word_trie, how_many_found, empty_char);
 
     // print out how many were found
-    if (how_many_found > 0) {
+    if (how_many_found == 1) {
+        cout << "Found one word which is:" << endl;
+    } else if (how_many_found > 0) {
         cout << "Found " << how_many_found << " words which are:" << endl;
     } else {
         cout << "Found no words with that suffix!" << endl;
@@ -164,12 +172,13 @@ void readDictionary(Node* word_trie) {
     inStream.close();  // close the input file stream
 }
 
-// asks user for suffix and returns it as C-string
-void askForSuffix(char* suffix) {
+// asks user for suffix and returns it as C-string, returns its length
+int askForSuffix(char* suffix) {
     cout << "Enter the suffix to find rhyming words: ";
 
     cin >> suffix;
 
+    return strlen(suffix);
     // TODO(basheersubei) validate user input
 }
 
@@ -207,7 +216,6 @@ void storeWordInTrie(char *word, int size, Node* trie) {
         for (int i = 0; i < NUMBER_OF_CHILDREN; i++)
             trie->letters[first_char_index]->letters[i] = NULL;
     }
-    
     // don't forget to mark this node as the end of the word!
     if (size == 1)
         trie->letters[first_char_index]->is_word = true;
