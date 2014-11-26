@@ -165,6 +165,7 @@ void readDictionary(Node* word_trie) {
 
     cout << "\nReading dictionary file...\n";
 
+    valid:
     while ( inStream >> tempString ) {
         // get the size of the string
         size = strlen(tempString);
@@ -185,10 +186,13 @@ void readDictionary(Node* word_trie) {
                     cout << "word " << strReverse(tempString)
                         << " is not alphanumeric and will be rejected!" << endl;
                 }
-                break;  // since word is not valid, abort
+                goto valid;  // since word is not valid, abort
             }
         }  // end for (reads each char in the current word)
 
+        // convert to lowercase
+        for (int i = 0; i < size; i++)
+            tempString[i] = tolower(tempString[i]);
         storeWordInTrie(tempString, size, word_trie);
     }  // end while (reads each word line by line)
 
