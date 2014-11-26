@@ -16,6 +16,7 @@
 */
 
 #include <stdio.h>  // for compiling on Unix
+#include <stdlib.h>
 #include <cstdlib>
 #include <iostream>
 #include <fstream>    // For file input
@@ -96,7 +97,8 @@ int main() {
     int suffix_length = askForSuffix(suffix);
 
     if (suffix_length <= 0) {
-        cout << "Error taking in suffix!" << endl;
+        cout << "User input error! Exiting!" << endl;
+        exit(0);
     }
 
     if (DEBUG_MODE)
@@ -187,8 +189,6 @@ void readDictionary(Node* word_trie) {
         if (DEBUG_MODE)
             cout << "word is " << tempString << " and size is " << size << endl;
 
-        // convertToLowerCase(tempString, size);  // convert word to lower case
-
         // reverse the string
         strReverse(tempString);
 
@@ -220,8 +220,14 @@ int askForSuffix(char* suffix) {
     cin >> suffix;
     strReverse(suffix);
 
+    // validate user input
+    for (int i = 0; i < strlen(suffix); i++) {
+        if (!isalpha(suffix[i])) {
+            return -1;
+        }
+    }
+
     return strlen(suffix);
-    // TODO(basheersubei) validate user input
 }
 
 // searches for word (with given size) into trie.
