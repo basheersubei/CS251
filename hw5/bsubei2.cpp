@@ -57,7 +57,10 @@ void readDictionary(Node* word_trie);
 char * strReverse(char *str);
 void storeWordInTrie(char *word, int size, Node* trie);
 int askForSuffix(char* suffix);
-void searchTrieForSuffix(Node* word_trie, char* suffix, int length, WordNode* words_found);
+void searchTrieForSuffix(Node* word_trie,
+    char* suffix,
+    int length,
+    WordNode* words_found);
 void searchWordInTrie(char *word,
     int size,
     Node* trie,
@@ -65,7 +68,10 @@ void searchWordInTrie(char *word,
     char *word_so_far,
     WordNode *words_found);
 void deleteTrieWords(Node* word_trie);
-void TriePreorderTraversal(char *word_so_far, int &how_many_found, WordNode *words_found, Node* trie);
+void TriePreorderTraversal(char *word_so_far,
+    int &how_many_found,
+    WordNode *words_found,
+    Node* trie);
 void addWordNode(WordNode *current_node, char* word_to_add);
 void printLinkedList(WordNode *current_node);
 void deleteWordNodes(WordNode *current_node);
@@ -129,13 +135,21 @@ void deleteTrieWords(Node* word_trie) {
 }
 
 // counts how many and which words in the dictionary exist with that suffix
-void searchTrieForSuffix(Node* word_trie, char* suffix, int length, WordNode* words_found) {
+void searchTrieForSuffix(Node* word_trie,
+    char* suffix,
+    int length,
+    WordNode* words_found) {
     // keep track of how many words were found so far in the trie
     int how_many_found = 0;
     char empty_char[] = " ";
     // actually search for the suffix in the trie
     // store how many you found and which ones
-    searchWordInTrie(suffix, length, word_trie, how_many_found, empty_char, words_found);
+    searchWordInTrie(suffix,
+        length,
+        word_trie,
+        how_many_found,
+        empty_char,
+        words_found);
 
     // print out how many were found
     if (how_many_found == 1) {
@@ -260,7 +274,10 @@ void searchWordInTrie(char *word,
 
 // do a depth-first traversal on all children of the trie recursively, and track
 // and store how many and which words were found
-void TriePreorderTraversal(char *word_so_far, int &how_many_found, WordNode *words_found, Node* trie) {
+void TriePreorderTraversal(char *word_so_far,
+    int &how_many_found,
+    WordNode *words_found,
+    Node* trie) {
     // if current word_so_far is a word, store and increment counter
     if (trie->is_word) {
         // store word_so_far
@@ -281,7 +298,10 @@ void TriePreorderTraversal(char *word_so_far, int &how_many_found, WordNode *wor
             memset(new_word, 0, sizeof(char)* (strlen(word_so_far)+2));
             strcpy(new_word, word_so_far);
             strcat(new_word, c);  // add next child pointer char to end of word
-            TriePreorderTraversal(new_word, how_many_found, words_found, trie->letters[i]);
+            TriePreorderTraversal(new_word,
+                how_many_found,
+                words_found,
+                trie->letters[i]);
             delete[] new_word;  // delete word now that we're done with it
         }
     }
@@ -310,14 +330,11 @@ void addWordNode(WordNode *current_node, char* word_to_add) {
     } else {
         temp = new_node;
     }
-
 }
 
 void printLinkedList(WordNode *current_node) {
-    // TODO(basheersubei) fix some char array uninitialized error.
-    // TODO(basheersubei) first '-' element is being printed out, that
-    // element should contain the actual first word.
     if (current_node != NULL) {
+        // does not print out first empty node
         if (current_node->word[0] != '-')
             cout << strReverse(current_node->word) << " ";
         printLinkedList(current_node->pNext);
