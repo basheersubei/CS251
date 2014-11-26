@@ -220,6 +220,10 @@ int askForSuffix(char* suffix) {
     cin >> suffix;
     strReverse(suffix);
 
+    // convert input to lowercase
+    for (int i = 0; i < strlen(suffix); i++)
+        suffix[i] = tolower(suffix[i]);
+
     // validate user input
     for (int i = 0; i < strlen(suffix); i++) {
         if (!isalpha(suffix[i])) {
