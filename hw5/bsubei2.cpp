@@ -99,7 +99,7 @@ int main() {
     // create an empty WordNode linked list to store words found
     WordNode *words_found = new WordNode;
     words_found->pNext = NULL;
-    words_found->word[0] = '-';
+    words_found->word[0] = '-';  // indicates first node (has no word in it)
 
     // search the trie for suffix and print results
     searchTrieForSuffix(word_trie, suffix, suffix_length, words_found);
@@ -314,7 +314,8 @@ void printLinkedList(WordNode *current_node) {
     // TODO(basheersubei) first '-' element is being printed out, that
     // element should contain the actual first word.
     if (current_node != NULL) {
-        cout << strReverse(current_node->word) << " ";
+        if (current_node->word[0] != '-')
+            cout << strReverse(current_node->word) << " ";
         printLinkedList(current_node->pNext);
     }
 }
