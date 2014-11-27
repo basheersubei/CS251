@@ -1,6 +1,6 @@
 /* ------------------------------------------------ 
 * Copyright 2014 <Basheer Subei> There is no copyright :D
-* HW5 Rhymes With
+* HW6 Trie Harder
 
 * Class: CS 251, Fall 2014.
 
@@ -10,6 +10,7 @@
 
 * This program stores words from a dictionary into a trie (in reverse),
 * so that users can request to print out all words with a certain suffix.
+* It uses a linked list implementation to store the pointers of the trie nodes.
 
 * -------------------------------------------------
 
@@ -54,6 +55,7 @@ struct WordNode {
 
 // function declarations
 void printStartSequence();
+void printOptions();
 void readDictionary(Node* word_trie);
 char * strReverse(char *str);
 void storeWordInTrie(char *word, int size, Node* trie);
@@ -80,6 +82,7 @@ void deleteWordNodes(WordNode *current_node);
 int main() {
     // print welcome message and stuff
     printStartSequence();
+    printOptions();
 
     Node *word_trie = new Node;
     word_trie->c = '-';  // dash indicates root node
@@ -414,7 +417,18 @@ void printStartSequence() {
     cout << "Author: Basheer Subei" << endl;
     cout << "TA: Nianzu, Lab: 10 am Thursday" << endl;
     cout << "CS 251 Fall 2014" << endl;
-    cout << "Program: #5, Rhymes With" << endl;
+    cout << "Program: #6, Trie Harder" << endl;
     cout << "Built on Ubuntu 14.04, compiled using g++ v4.8.2" << endl;
     cout << endl;
+}
+
+// prints out quick instructions
+void printOptions() {
+    cout << "Options:" << endl;
+    cout << "f str\tFind str" << endl;
+    cout << "p n\tPrint next n" << endl;
+    cout << "a str\tAdd str" << endl;
+    cout << "d str\tDelete str" << endl;
+    cout << "?\tHelp" << endl;
+    cout << "x\tExit" << endl;
 }
