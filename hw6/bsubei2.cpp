@@ -34,17 +34,20 @@ using std::ifstream;
 // preprocessor definitions
 
 // debug mode (prints out debug messages)
-#define DEBUG_MODE 0
+#define DEBUG_MODE 1
 #define TEST_DATA_FILES 0
 #define MAX_LINE_LENGTH 10000
 #define ASCII_OFFSET 97
 #define NUMBER_OF_CHILDREN 26
 
+// trie nodes have child pointers and sibling pointers,
+// as well as parent pointer (at the end of the linked list).
 // defines each node in the trie
 struct Node {
     char c;  // the char this node holds
     bool is_word;  // indicates whether it's a complete word
-    Node* letters[NUMBER_OF_CHILDREN];  // child pointers to each letter
+    Node* pChild;  // child pointer (points to another node under it)
+    Node* pSibling;  // sibling pointer (points to node to the right of it)
 };
 
 // defines a node to store word strings in a linked list
@@ -87,11 +90,8 @@ int main() {
     Node *word_trie = new Node;
     word_trie->c = '-';  // dash indicates root node
     word_trie->is_word = false;
-    // we have to initialize the child pointers to NULL
-    // or valgrind complains about partially initialized variables
-    // in other scopes (in readDictionary and such)
-    for (int i = 0; i < NUMBER_OF_CHILDREN; i++)
-        word_trie->letters[i] = NULL;
+    word_trie->pChild = NULL;
+    word_trie->pSibling = NULL;
 
     readDictionary(word_trie);
 
@@ -112,8 +112,10 @@ int main() {
     words_found->pNext = NULL;
     words_found->word[0] = '-';  // indicates first node (has no word in it)
 
+    // TODO(basheersubei) we need to keep a pointer to the suffix so
+    // we can run commands from that point, as well as a cursor pointer.
     // search the trie for suffix and print results
-    searchTrieForSuffix(word_trie, suffix, suffix_length, words_found);
+    // searchTrieForSuffix(word_trie, suffix, suffix_length, words_found);
 
     printLinkedList(words_found);
 
@@ -122,22 +124,23 @@ int main() {
     // now we're done. Let's clean up and free memory
 
     // delete all nodes in trie
-    deleteTrieWords(word_trie);
+    // deleteTrieWords(word_trie);
     // delete WordNode linked list words_found
     deleteWordNodes(words_found);
 
     return 0;
 }  // end main()
 
+// TODO(basheersubei) change this to use linked list trie
 // do a depth-first traversal of the entire trie and deallocate all nodes
-void deleteTrieWords(Node* word_trie) {
-    for (int i = 0; i < NUMBER_OF_CHILDREN; i++) {
-        if (word_trie->letters[i] != NULL)
-            deleteTrieWords(word_trie->letters[i]);
-    }
+// void deleteTrieWords(Node* word_trie) {
+//     for (int i = 0; i < NUMBER_OF_CHILDREN; i++) {
+//         if (word_trie->letters[i] != NULL)
+//             deleteTrieWords(word_trie->letters[i]);
+//     }
 
-    delete word_trie;
-}
+//     delete word_trie;
+// }
 
 // counts how many and which words in the dictionary exist with that suffix
 void searchTrieForSuffix(Node* word_trie,
@@ -149,12 +152,12 @@ void searchTrieForSuffix(Node* word_trie,
     char empty_char[] = " ";
     // actually search for the suffix in the trie
     // store how many you found and which ones
-    searchWordInTrie(suffix,
+    /*searchWordInTrie(suffix,
         length,
         word_trie,
         how_many_found,
         empty_char,
-        words_found);
+        words_found);*/
 
     // print out how many were found
     if (how_many_found == 1) {
@@ -210,6 +213,8 @@ void readDictionary(Node* word_trie) {
         // convert to lowercase
         for (int i = 0; i < size; i++)
             tempString[i] = tolower(tempString[i]);
+        if (DEBUG_MODE)
+            cout << "storing word " << tempString << endl;
         storeWordInTrie(tempString, size, word_trie);
     }  // end while (reads each word line by line)
 
@@ -237,12 +242,13 @@ int askForSuffix(char* suffix) {
     return strlen(suffix);
 }
 
+// TODO(basheersubei) change this to use linked list trie nodes
 // searches for word (with given size) into trie.
 // it does this recursively char by char and calls itself with
 // the same word except first character and throws in child pointer as well.
 // analogous to storeWordInTrie(), except it keeps track of how many are found
 // and keeps track of the word built so far (word_so_far grows as word shrinks)
-void searchWordInTrie(char *word,
+/*void searchWordInTrie(char *word,
     int size,
     Node* trie,
     int &how_many_found,
@@ -283,11 +289,11 @@ void searchWordInTrie(char *word,
             cout << "schnikes! " << word_so_far << endl;
         TriePreorderTraversal(word_so_far, how_many_found, words_found, trie);
     }
-}
+}*/
 
 // do a depth-first traversal on all children of the trie recursively, and track
 // and store how many and which words were found
-void TriePreorderTraversal(char *word_so_far,
+/*void TriePreorderTraversal(char *word_so_far,
     int &how_many_found,
     WordNode *words_found,
     Node* trie) {
@@ -318,7 +324,7 @@ void TriePreorderTraversal(char *word_so_far,
             delete[] new_word;  // delete word now that we're done with it
         }
     }
-}
+}*/
 
 void deleteWordNodes(WordNode *current_node) {
     if (current_node->pNext != NULL) {
@@ -354,7 +360,8 @@ void printLinkedList(WordNode *current_node) {
     }
 }
 
-// stores word (with given size) into trie.
+// TODO(basheersubei) change how to build trie using linked list
+// stores word (with given size) into trie (given root node at first).
 // it does this recursively char by char and calls itself with
 // the same word except first character and throws in child pointer as well
 void storeWordInTrie(char *word, int size, Node* trie) {
@@ -373,27 +380,63 @@ void storeWordInTrie(char *word, int size, Node* trie) {
 
     // get the first char in the word (or sub-word as is thrown recursively)
     char first_char = word[0];
-    int first_char_index = (int) (first_char - ASCII_OFFSET);
+    // int first_char_index = (int) (first_char - ASCII_OFFSET);
 
-    // check if this node's pointer to first_char exists.
-    // if not, then add it.
-    if (trie->letters[first_char_index] == NULL) {
-        // create new node and initialize with values
-        Node* added_node = new Node;
-        trie->letters[first_char_index] = added_node;
-        trie->letters[first_char_index]->c = first_char;
-        trie->letters[first_char_index]->is_word = false;
-        // we have to initialize child pointers to NULL to avoid
-        // partially initialized valgrind warning
-        for (int i = 0; i < NUMBER_OF_CHILDREN; i++)
-            trie->letters[first_char_index]->letters[i] = NULL;
+    Node* children_list = trie->pChild;
+    Node* pTrail = NULL;  // trails behind children_list
+
+    // if non-NULL child exists, find node in linked list or create one
+    if (children_list != NULL) {
+        // go through sibling linked list
+        while (children_list != NULL) {
+            // if this node contains the letter, traverse it deeper
+            if (children_list->c == first_char) {
+                storeWordInTrie(&word[1], --size, children_list);
+                break;
+            // else we reached the blank tail node, add the new node there
+            // TODO(basheersubei) check if conditions here
+            } else if (/*children_list->c == '-' || */children_list->pChild == trie /*&& children_list->pSibling->c == '-'*/) {
+                // create new Node and initialize values
+                Node* added_node = new Node;
+                added_node->c = first_char;
+                added_node->is_word = false;
+                if (size == 1)
+                    added_node->is_word = true;
+                added_node->pChild = NULL;
+                // have the new node point to the blank tail node
+                added_node->pSibling = children_list;
+                // have the trailing pointer's (previous node) sibling
+                // point to the new node.
+                pTrail->pSibling = added_node;
+                storeWordInTrie(&word[1], --size, added_node);
+                return;  // we're done here (reached tail)
+            }
+
+            pTrail = children_list;
+            children_list = children_list->pSibling;
+        }  // end while loop through siblings linked list
+    // else children_list is null, then create a child and add a node
+    } else {
+        // create a tail node for the list
+        Node* tail_node = new Node;
+        tail_node->c = '-';
+        tail_node->is_word = false;
+        tail_node->pSibling = NULL;
+        tail_node->pChild = trie;  // tail pChild points to parent node
+
+        // now create a child node and point the sibling to tail_node
+        Node* child_node = new Node;
+        child_node->c = first_char;
+        child_node->is_word = false;
+        if (size == 1)
+            child_node->is_word = true;
+        child_node->pChild = NULL;
+        child_node->pSibling = tail_node;
+
+        trie->pChild = child_node;
+        // now traverse further
+        storeWordInTrie(&word[1], --size, child_node);
     }
-    // don't forget to mark this node as the end of the word!
-    if (size == 1)
-        trie->letters[first_char_index]->is_word = true;
-
-    // now traverse recursively to next level
-    storeWordInTrie(&word[1], --size, trie->letters[first_char_index]);
 }
 
 // Reverses the string Note:changing the orginal string
