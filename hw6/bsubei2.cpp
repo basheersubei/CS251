@@ -34,7 +34,7 @@ using std::ifstream;
 // preprocessor definitions
 
 // debug mode (prints out debug messages)
-#define DEBUG_MODE 1
+#define DEBUG_MODE 0
 #define TEST_DATA_FILES 0
 #define MAX_LINE_LENGTH 10000
 #define ASCII_OFFSET 97
@@ -101,6 +101,8 @@ int main() {
     // Node pointer to current position, starts off being same as
     // pSuffix but printCommand moves it like a cursor
     Node *pCursor = NULL;
+    // used to store suffix string upon calling find command
+    char *suffix_string = NULL;
 
     // fills up trie with dictionary words
     readDictionary(word_trie);
@@ -113,9 +115,10 @@ int main() {
         char command[MAX_LINE_LENGTH];
         cout << "Your instruction: ";
         cin.getline(command, MAX_LINE_LENGTH);  // read in command
+        // TODO(basheersubei) user input should just be 'f str', not 'find str'
         // if find command
         if (strstr(command, "find") != NULL) {
-            char *suffix_string = strstr(command, "find") + 5;
+            suffix_string = strstr(command, "find") + 5;
             strReverse(suffix_string);  // reverse suffix
             if (DEBUG_MODE)
                 cout << "suffix reverse: " << suffix_string << endl;
