@@ -128,7 +128,9 @@ int main() {
             pCursor = pSuffix;
             // if pSuffix is NULL, then didn't find
             if (pSuffix == NULL) {
-                cout << "Failed to find " << suffix_string << " in trie!" << endl;
+                cout << "Failed to find "
+                << suffix_string
+                << " in trie!" << endl;
             // else print success message
             } else {
                 cout << "Found " << suffix_string
@@ -175,7 +177,6 @@ void findStr(char *suffix_string, Node* &pSuffix, Node *trie) {
     Node *pTemp = trie;
     // check whether this trie node or its siblings have the first char
     do {
-
         // if we find the char, we either reached the final suffix position
         // or we have to traverse deeper to find it.
         if (pTemp->c == first_char) {
@@ -186,7 +187,9 @@ void findStr(char *suffix_string, Node* &pSuffix, Node *trie) {
                 // set pSuffix to this node
                 pSuffix = trie;
             } else {
-                findStr(&suffix_string[1], pSuffix, pTemp->pChild);  // dig deeper
+                findStr(&suffix_string[1],
+                        pSuffix,
+                        pTemp->pChild);  // dig deeper
             }
 
             // either way, we're done
@@ -194,9 +197,7 @@ void findStr(char *suffix_string, Node* &pSuffix, Node *trie) {
         }
 
         pTemp = pTemp->pSibling;
-
-    } while(pTemp->pSibling != NULL);
-
+    } while (pTemp->pSibling != NULL);
 }
 
 // do a depth-first traversal of the entire trie and deallocate all nodes
@@ -434,7 +435,6 @@ void printLinkedList(WordNode *current_node) {
     }
 }
 
-// TODO(basheersubei) change how to build trie using linked list
 // stores word (with given size) into trie (given root node at first).
 // it does this recursively char by char and calls itself with
 // the same word except first character and throws in child pointer as well
