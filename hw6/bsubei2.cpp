@@ -82,6 +82,9 @@ void addWordNode(WordNode *current_node, char* word_to_add);
 void printLinkedList(WordNode *current_node);
 void deleteWordNodes(WordNode *current_node);
 void findStr(char *suffix_string, Node* &pSuffix, Node *trie);
+bool findNextWord(Node *pSuffix, Node* &pCursor);
+bool shiftCursorOnce(Node *pSuffix, Node* &pCursor);
+void printWord(Node* pCursor);
 
 int main() {
     // print welcome message and stuff
@@ -139,9 +142,37 @@ int main() {
                 cout << "Found " << suffix_string
                 << " in trie! Position cursor updated!" << endl;
             }
-        }  // end if find command
+            // else if print command
+        } else if (command[0] == 'p') {
+            // extract how many to print
+            int n = atoi(&command[2]);
 
-        // TODO(basheersubei) else if print command
+            // print command implemented like this:
+            // just call a function that finds the next word and sets pCursor,
+            // then walk back from pCursor to root and print along the way.
+            // Shift pCursor once and repeat all as many times as we want.
+
+            // preemptively check whether we can print anymore words using pTemp
+            Node *pTemp = pCursor;
+            if (!shiftCursorOnce(pSuffix, pTemp)) {
+                cout << "No more words to print! Leaving..." << endl;
+                    continue;
+            }
+
+            cout << "Printing next " << n << " words..." << endl;
+            // loop n times and call findNextWord
+            while (n > 0 && findNextWord(pSuffix, pCursor)) {
+                printWord(pCursor);
+                // save pCursor before shifting in case it's invalid to shift
+                Node *pTemp = pCursor;
+                if (!shiftCursorOnce(pSuffix, pCursor)) {
+                    pCursor = pTemp;
+                    cout << "No more words to print! Leaving..." << endl;
+                    break;
+                }
+                n--;
+            }
+        }
 
         // TODO(basheersubei) else if add command
 
@@ -168,6 +199,106 @@ int main() {
 
     return 0;
 }  // end main()
+
+// walks back to the root node from the given node.
+// it does this by using the parent pointer in the sibling tail nodes.
+void printWord(Node* pCursor) {
+    if (pCursor == NULL) {
+        cout << "Unable to print word! Null pointer!" << endl;
+        return;
+    }
+
+    // if not root node
+    if (pCursor->pSibling != NULL) {
+        // print current char
+        cout << pCursor->c;
+    } else {  // if root node, print endline and leave
+        if (DEBUG_MODE)
+            cout << "printing reached root node!" << endl;
+        cout << endl;
+        return;
+    }
+    // go to the tail node
+    while (pCursor->pSibling->c != '-') pCursor = pCursor->pSibling;
+
+    // now traverse to the parent
+    printWord(pCursor->pSibling->pChild);
+}
+
+// given pCursor, traverse the trie one step (either
+// child or sibling or tail to parent).
+// returns true on success and false if pCursor == pSuffix.
+bool shiftCursorOnce(Node *pSuffix, Node* &pCursor) {
+    if (pCursor->pChild != NULL) {
+        pCursor = pCursor->pChild;
+    } else if (pCursor->pSibling != NULL) {
+        while (pCursor->pSibling->c == '-') {
+            pCursor = pCursor->pSibling->pChild;
+            if (pCursor == pSuffix) {
+                // reached top (back to pSuffix), must stop printing
+                if (DEBUG_MODE)
+                    cout << "Reached top during shift!" << endl;
+                return false;  // indicate that no more should be printed
+            }
+        }
+        pCursor = pCursor->pSibling;
+    } else {
+        cout << "Unable to shift to either children or siblings!" << endl;
+    }
+    return true;
+}
+
+// finds the next word unless there are no more words.
+// changes pCursor to point to the word found.
+bool findNextWord(Node *pSuffix, Node* &pCursor) {
+    if (pCursor == NULL) {
+        cout << "Cursor pointer is not set yet!"
+        << " Please call find command first!" << endl;
+        return false;
+    }
+
+    Node *pTemp = pCursor;
+
+    // if we found the word, back up recursively
+    if (pCursor->is_word) {
+        if (DEBUG_MODE)
+            cout << "found word at " << pCursor->c << endl;
+        return true;
+    } else {
+        // else look for the word (traverse children, then siblings)
+        if (pCursor->pChild != NULL) {
+            // traverse children
+            pCursor = pCursor->pChild;
+            if (findNextWord(pSuffix, pCursor)) {
+                return true;
+            }  // end if found word
+        }  // end if child exists
+
+        // then traverse siblings
+        pCursor = pTemp;  // reset pCursor back to what it was
+        // while siblings exist
+        while (pCursor->pSibling != NULL) {
+            pCursor = pCursor->pSibling;  // default case, traverse sibling
+
+            // handle special case when sibling is tail node
+            if (pCursor->pSibling->c == '-') {
+                if (DEBUG_MODE)
+                    cout << "Reached tail node, going up!" << endl;
+                // traverse parent's sibling (parent is tail node's child)
+                pCursor = pCursor->pSibling->pChild->pSibling;
+                // check if we traversed back up to the top of
+                // where we started (pSuffix).
+                if (pCursor == pSuffix) {
+                    cout << "Sorry, ran out of words to print!" << endl;
+                    return false;
+                }
+            }  // end if sibling is tail node
+            if (findNextWord(pSuffix, pCursor)) {
+                return true;
+            }
+        }  // end while sibling is not null (traverse siblings)
+    }  // end else pCursor is not word
+}
 
 // recursively traverse the trie until suffix is found, and update pSuffix
 // to point to that node.
