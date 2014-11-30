@@ -118,10 +118,9 @@ int main() {
         char command[MAX_LINE_LENGTH];
         cout << "Your instruction: ";
         cin.getline(command, MAX_LINE_LENGTH);  // read in command
-        // TODO(basheersubei) user input should just be 'f str', not 'find str'
         // if find command
-        if (strstr(command, "find") != NULL) {
-            suffix_string = strstr(command, "find") + 5;
+        if (command[0] == 'f') {
+            suffix_string = &command[2];
             strReverse(suffix_string);  // reverse suffix
             if (DEBUG_MODE)
                 cout << "suffix reverse: " << suffix_string << endl;
