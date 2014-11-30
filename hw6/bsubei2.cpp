@@ -85,6 +85,7 @@ void findStr(char *suffix_string, Node* &pSuffix, Node *trie);
 bool findNextWord(Node *pSuffix, Node* &pCursor);
 bool shiftCursorOnce(Node *pSuffix, Node* &pCursor);
 void printWord(Node* pCursor);
+void printDetailedOptions();
 
 int main() {
     // print welcome message and stuff
@@ -178,7 +179,9 @@ int main() {
         // TODO(basheersubei) else if delete command
 
         // TODO(basheersubei) else if help command
-
+        else if (command[0] == '?') {
+            printDetailedOptions();
+        }
         // else if exit command
         else if (command[0] == 'x') {
             cout << "Received exit command!" << endl;
@@ -681,4 +684,16 @@ void printOptions() {
     cout << "d str\tDelete str" << endl;
     cout << "?\tHelp" << endl;
     cout << "x\tExit" << endl;
+}
+
+// prints detailed instructions
+void printDetailedOptions() {
+    cout << "f str\tFind the string str in the tree." << endl;
+    cout << "p n\tPrint the next n words from the current position" << endl;
+    cout << "\treference, one per line." << endl;
+    cout << "a str\tAdd word str to the tree." << endl;
+    cout << "d str\tDelete word str from the tree, giving a warning" << endl;
+    cout << "\tif it doesn’t exit." << endl;
+    cout << "?\tDisplay help" << endl;
+    cout << "x\tExit the program." << endl;
 }
