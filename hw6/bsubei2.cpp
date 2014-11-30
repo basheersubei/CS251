@@ -81,43 +81,69 @@ void TriePreorderTraversal(char *word_so_far,
 void addWordNode(WordNode *current_node, char* word_to_add);
 void printLinkedList(WordNode *current_node);
 void deleteWordNodes(WordNode *current_node);
+void findStr(char *suffix_string, Node* &pSuffix, Node *trie);
 
 int main() {
     // print welcome message and stuff
     printStartSequence();
-    printOptions();
 
-    Node *word_trie = new Node;
+    Node *word_trie = new Node;  // root trie node
     word_trie->c = ' ';  // empty space indicates root node
     word_trie->is_word = false;
     word_trie->pChild = NULL;
     word_trie->pSibling = NULL;
 
+
+    // we need to keep a pointer to the suffix so
+    // we can run commands from that point, as well as a cursor pointer.
+    // Node pointer to last letter in suffix that was searched for.
+    Node *pSuffix = NULL;
+    // Node pointer to current position, starts off being same as
+    // pSuffix but printCommand moves it like a cursor
+    Node *pCursor = NULL;
+
+    // fills up trie with dictionary words
     readDictionary(word_trie);
 
-    // take in user input (word suffix).
-    char suffix[MAX_LINE_LENGTH];
-    int suffix_length = askForSuffix(suffix);
+    // print instructions on every command
+    printOptions();
 
-    if (suffix_length <= 0) {
-        cout << "User input error! Exiting!" << endl;
-        exit(0);
-    }
+    // TODO(basheersubei) take user input command (as loop)
+    char command[MAX_LINE_LENGTH];
+    cout << "Your instruction: ";
+    cin.getline(command, MAX_LINE_LENGTH);
+    // if find command
+    if (strstr(command, "find") != NULL) {
+        char *suffix_string = strstr(command, "find") + 5;
+        strReverse(suffix_string);  // reverse suffix
+        if (DEBUG_MODE)
+            cout << "suffix reverse: " << suffix_string << endl;
 
-    if (DEBUG_MODE)
-        cout << suffix << endl;
+        pSuffix = NULL;  // resets pSuffix
+        // run find command
+        findStr(suffix_string, pSuffix, word_trie->pChild);
 
-    // create an empty WordNode linked list to store words found
-    WordNode *words_found = new WordNode;
-    words_found->pNext = NULL;
-    words_found->word[0] = '-';  // indicates first node (has no word in it)
+        // set cursor to same as pSuffix, and print out success or not
+        pCursor = pSuffix;
+        // if pSuffix is NULL, then didn't find
+        if (pSuffix == NULL) {
+            cout << "Failed to find " << suffix_string << " in trie!" << endl;
+        // else print success message
+        } else {
+            cout << "Found " << suffix_string
+            << " in trie! Position cursor updated!" << endl;
+        }
+    }  // end if find command
 
-    // TODO(basheersubei) we need to keep a pointer to the suffix so
-    // we can run commands from that point, as well as a cursor pointer.
-    // search the trie for suffix and print results
-    // searchTrieForSuffix(word_trie, suffix, suffix_length, words_found);
+    // TODO(basheersubei) else if print command
 
-    printLinkedList(words_found);
+    // TODO(basheersubei) else if add command
+
+    // TODO(basheersubei) else if delete command
+
+    // TODO(basheersubei) else if help command
+
+    // TODO(basheersubei) else if exit command
 
     cout << endl << endl << "Done with program... Exiting!" << endl;
 
@@ -125,11 +151,44 @@ int main() {
 
     // delete all nodes in trie
     deleteTrieWords(word_trie);
-    // delete WordNode linked list words_found
-    deleteWordNodes(words_found);
 
     return 0;
 }  // end main()
+
+// recursively traverse the trie until suffix is found, and update pSuffix
+// to point to that node.
+void findStr(char *suffix_string, Node* &pSuffix, Node *trie) {
+    // if trie node is null, return
+    if (trie == NULL)
+        return;
+
+    char first_char = suffix_string[0];
+    Node *pTemp = trie;
+    // check whether this trie node or its siblings have the first char
+    do {
+
+        // if we find the char, we either reached the final suffix position
+        // or we have to traverse deeper to find it.
+        if (pTemp->c == first_char) {
+            if (strlen(suffix_string) <= 1) {
+                // WE FOUND IT!!!
+                if (DEBUG_MODE)
+                    cout << "found suffix " << suffix_string << endl;
+                // set pSuffix to this node
+                pSuffix = trie;
+            } else {
+                findStr(&suffix_string[1], pSuffix, pTemp->pChild);  // dig deeper
+            }
+
+            // either way, we're done
+            return;
+        }
+
+        pTemp = pTemp->pSibling;
+
+    } while(pTemp->pSibling != NULL);
+
+}
 
 // do a depth-first traversal of the entire trie and deallocate all nodes
 void deleteTrieWords(Node* word_trie) {
