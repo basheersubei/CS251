@@ -105,45 +105,54 @@ int main() {
     // fills up trie with dictionary words
     readDictionary(word_trie);
 
-    // print instructions on every command
-    printOptions();
+    // take user input command (as infinite loop until exit command)
+    while (true) {
+        // print instructions on every command
+        printOptions();
 
-    // TODO(basheersubei) take user input command (as loop)
-    char command[MAX_LINE_LENGTH];
-    cout << "Your instruction: ";
-    cin.getline(command, MAX_LINE_LENGTH);
-    // if find command
-    if (strstr(command, "find") != NULL) {
-        char *suffix_string = strstr(command, "find") + 5;
-        strReverse(suffix_string);  // reverse suffix
-        if (DEBUG_MODE)
-            cout << "suffix reverse: " << suffix_string << endl;
+        char command[MAX_LINE_LENGTH];
+        cout << "Your instruction: ";
+        cin.getline(command, MAX_LINE_LENGTH);  // read in command
+        // if find command
+        if (strstr(command, "find") != NULL) {
+            char *suffix_string = strstr(command, "find") + 5;
+            strReverse(suffix_string);  // reverse suffix
+            if (DEBUG_MODE)
+                cout << "suffix reverse: " << suffix_string << endl;
 
-        pSuffix = NULL;  // resets pSuffix
-        // run find command
-        findStr(suffix_string, pSuffix, word_trie->pChild);
+            pSuffix = NULL;  // resets pSuffix
+            // run find command
+            findStr(suffix_string, pSuffix, word_trie->pChild);
 
-        // set cursor to same as pSuffix, and print out success or not
-        pCursor = pSuffix;
-        // if pSuffix is NULL, then didn't find
-        if (pSuffix == NULL) {
-            cout << "Failed to find " << suffix_string << " in trie!" << endl;
-        // else print success message
+            // set cursor to same as pSuffix, and print out success or not
+            pCursor = pSuffix;
+            // if pSuffix is NULL, then didn't find
+            if (pSuffix == NULL) {
+                cout << "Failed to find " << suffix_string << " in trie!" << endl;
+            // else print success message
+            } else {
+                cout << "Found " << suffix_string
+                << " in trie! Position cursor updated!" << endl;
+            }
+        }  // end if find command
+
+        // TODO(basheersubei) else if print command
+
+        // TODO(basheersubei) else if add command
+
+        // TODO(basheersubei) else if delete command
+
+        // TODO(basheersubei) else if help command
+
+        // else if exit command
+        else if (command[0] == 'x') {
+            cout << "Received exit command!" << endl;
+            break;
+        // else, command not recognized
         } else {
-            cout << "Found " << suffix_string
-            << " in trie! Position cursor updated!" << endl;
+            cout << "Command not recognized! Please try again..." << endl;
         }
-    }  // end if find command
-
-    // TODO(basheersubei) else if print command
-
-    // TODO(basheersubei) else if add command
-
-    // TODO(basheersubei) else if delete command
-
-    // TODO(basheersubei) else if help command
-
-    // TODO(basheersubei) else if exit command
+    }  // end infinite while (user input)
 
     cout << endl << endl << "Done with program... Exiting!" << endl;
 
