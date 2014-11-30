@@ -88,7 +88,7 @@ int main() {
     printOptions();
 
     Node *word_trie = new Node;
-    word_trie->c = '-';  // dash indicates root node
+    word_trie->c = ' ';  // empty space indicates root node
     word_trie->is_word = false;
     word_trie->pChild = NULL;
     word_trie->pSibling = NULL;
@@ -124,23 +124,29 @@ int main() {
     // now we're done. Let's clean up and free memory
 
     // delete all nodes in trie
-    // deleteTrieWords(word_trie);
+    deleteTrieWords(word_trie);
     // delete WordNode linked list words_found
     deleteWordNodes(words_found);
 
     return 0;
 }  // end main()
 
-// TODO(basheersubei) change this to use linked list trie
 // do a depth-first traversal of the entire trie and deallocate all nodes
-// void deleteTrieWords(Node* word_trie) {
-//     for (int i = 0; i < NUMBER_OF_CHILDREN; i++) {
-//         if (word_trie->letters[i] != NULL)
-//             deleteTrieWords(word_trie->letters[i]);
-//     }
+void deleteTrieWords(Node* word_trie) {
+    // go through each node linked list
+    while (word_trie != NULL) {
+        // if each node in the list has children (and not tail), recurse
+        // one level deeper.
+        if (word_trie->pChild != NULL  && word_trie->c != '-') {
+            deleteTrieWords(word_trie->pChild);
+        }
 
-//     delete word_trie;
-// }
+        // move the pointer over to sibling and delete the old one
+        Node* pTemp = word_trie;
+        word_trie = word_trie->pSibling;
+        delete pTemp;
+    }
+}
 
 // counts how many and which words in the dictionary exist with that suffix
 void searchTrieForSuffix(Node* word_trie,
