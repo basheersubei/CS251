@@ -91,7 +91,7 @@ void runProgram() {
 
             // preemptively check whether we can print anymore words using pTemp
             Node *pTemp = pCursor;
-            if (!shiftCursorOnce(pSuffix, pTemp)) {
+            if (pCursor != NULL && !shiftCursorOnce(pSuffix, pTemp)) {
                 cout << "No more words to print! Leaving..." << endl;
                     continue;
             }
@@ -350,7 +350,7 @@ void readDictionary(Node* word_trie) {
             if (!isalpha(tempString[i])) {
                 if (DEBUG_MODE) {
                     cout << "word " << strReverse(tempString)
-                        << " is not alphanumeric and will be rejected!" << endl;
+                        << " is not alphabetic and will be rejected!" << endl;
                 }
                 goto valid;  // since word is not valid, abort
             }
