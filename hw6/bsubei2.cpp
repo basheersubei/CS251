@@ -193,21 +193,36 @@ void printWord(Node* pCursor) {
 // child or sibling or tail to parent).
 // returns true on success and false if pCursor == pSuffix.
 bool shiftCursorOnce(Node *pSuffix, Node* &pCursor) {
-    if (pCursor->pChild != NULL) {
-        pCursor = pCursor->pChild;
-    } else if (pCursor->pSibling != NULL) {
-        while (pCursor->pSibling->c == '-') {
-            pCursor = pCursor->pSibling->pChild;
-            if (pCursor == pSuffix) {
-                // reached top (back to pSuffix), must stop printing
-                if (DEBUG_MODE)
-                    cout << "Reached top during shift!" << endl;
-                return false;  // indicate that no more should be printed
-            }
+    // if we're at the starting point, don't check siblings
+    if (pCursor == pSuffix) {
+        if (DEBUG_MODE)
+            cout << "pCursor equals pSuffix!" << endl;
+
+        // only check children
+        if (pCursor->pChild != NULL) {
+            pCursor = pCursor->pChild;
+        } else {
+            cout << "Unable to shift to either children or siblings!!" << endl;
+            return false;
         }
-        pCursor = pCursor->pSibling;
     } else {
-        cout << "Unable to shift to either children or siblings!" << endl;
+        // check both children then siblings
+        if (pCursor->pChild != NULL) {
+            pCursor = pCursor->pChild;
+        } else if (pCursor->pSibling != NULL) {
+            while (pCursor->pSibling->c == '-') {
+                pCursor = pCursor->pSibling->pChild;
+                if (pCursor == pSuffix) {
+                    // reached top (back to pSuffix), must stop printing
+                    if (DEBUG_MODE)
+                        cout << "Reached top during shift!" << endl;
+                    return false;  // indicate that no more should be printed
+                }
+            }
+            pCursor = pCursor->pSibling;
+        } else {
+            cout << "Unable to shift to either children or siblings!" << endl;
+        }
     }
     return true;
 }
