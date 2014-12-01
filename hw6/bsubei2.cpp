@@ -140,6 +140,7 @@ void runProgram() {
             // add word in trie
             // TODO(basheersubei) does not handle adding new subwords
             storeWordInTrie(string_to_add, strlen(string_to_add), word_trie);
+        // TODO(basheersubei) fix bug when deleting subword
         // else if delete command
         } else if (command[0] == 'd') {
             char *string_to_delete = &command[2];
@@ -737,6 +738,11 @@ void storeWordInTrie(char *word, int size, Node* trie) {
             // if this node contains the letter, traverse it deeper
             if (children_list->c == first_char) {
                 storeWordInTrie(&word[1], --size, children_list);
+                // in the case that a subword is to be added, just
+                // mark the node as a word since no nodes need to be created.
+                if (size == 0)
+                    children_list->is_word = true;
+
                 break;
             // else we reached the blank tail node, add the new node there
             // TODO(basheersubei) check if conditions here
