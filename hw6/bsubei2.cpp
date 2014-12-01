@@ -89,6 +89,9 @@ void runProgram() {
             // then walk back from pCursor to root and print along the way.
             // Shift pCursor once and repeat all as many times as we want.
 
+            // TODO(basheersubei) fix bug when trying to find next word for a suffix
+            // which is the only word
+
             // preemptively check whether we can print anymore words using pTemp
             Node *pTemp = pCursor;
             if (pCursor != NULL && !shiftCursorOnce(pSuffix, pTemp)) {
