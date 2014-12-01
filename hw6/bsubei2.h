@@ -82,5 +82,6 @@ bool shiftCursorOnce(Node *pSuffix, Node* &pCursor);
 void printWord(Node* pCursor);
 void printDetailedOptions();
 void runProgram();
+bool deleteWordFromTrie(char *word, int size, Node *trie);
 
 #endif  // BASHEER_HW_

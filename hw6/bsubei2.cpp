@@ -89,9 +89,6 @@ void runProgram() {
             // then walk back from pCursor to root and print along the way.
             // Shift pCursor once and repeat all as many times as we want.
 
-            // TODO(basheersubei) fix bug when trying to find next word for a suffix
-            // which is the only word
-
             // preemptively check whether we can print anymore words using pTemp
             Node *pTemp = pCursor;
             if (pCursor != NULL && !shiftCursorOnce(pSuffix, pTemp)) {
@@ -115,6 +112,7 @@ void runProgram() {
                 }
                 n--;
             }
+        // TODO(basheersubei) this isn't working, test this
         // else if add command
         } else if (command[0] == 'a') {
             char *string_to_add = &command[2];
@@ -138,19 +136,48 @@ void runProgram() {
             if (DEBUG_MODE)
                 cout << "storing word " << string_to_add << endl;
 
-            // TODO(basheersubei) handle duplicate entries
+            // handles duplicate entries
             // add word in trie
+            // TODO(basheersubei) does not handle adding new subwords
             storeWordInTrie(string_to_add, strlen(string_to_add), word_trie);
-        }
+        // else if delete command
+        } else if (command[0] == 'd') {
+            char *string_to_delete = &command[2];
+            int size = strlen(string_to_delete);
 
-        // TODO(basheersubei) else if delete command
+            // reverse the word
+            strReverse(string_to_delete);
 
-        // TODO(basheersubei) else if help command
-        else if (command[0] == '?') {
+            // check if valid (all alphabetic chars)
+            for (int i = 0; i < size; i++) {
+                if (!isalpha(string_to_delete[i])) {
+                    cout << "word " << strReverse(string_to_delete)
+                        << " is not alphabetic and will be rejected!" << endl;
+                    continue;  // since word is not valid, abort
+                }
+            }  // end for (reads each char in the current word)
+
+            // convert to lowercase
+            for (int i = 0; i < size; i++)
+                string_to_delete[i] = tolower(string_to_delete[i]);
+            if (DEBUG_MODE)
+                cout << "deleting word " << string_to_delete << endl;
+
+            // delete word from trie.
+            // if successful, reset pCursor and pSuffix
+            // to root node.
+            if (deleteWordFromTrie(string_to_delete,
+                            strlen(string_to_delete),
+                            word_trie)) {
+                pCursor = word_trie;
+                pSuffix = word_trie;
+            }
+
+        // else if help command
+        } else if (command[0] == '?') {
             printDetailedOptions();
-        }
         // else if exit command
-        else if (command[0] == 'x') {
+        } else if (command[0] == 'x') {
             cout << "Received exit command!" << endl;
             break;
         // else, command not recognized
@@ -166,6 +193,134 @@ void runProgram() {
     // delete all nodes in trie
     deleteTrieWords(word_trie);
 }  // end runProgram()
+
+// deletes word from Trie
+// the main idea (pseudocode) is:
+//
+// 1.   find the word given (trie node pointer to last char in word)
+// 2.   if word has children
+// 3.       mark word->is_word to false, and leave
+// 4.   else word has no children
+// 5.       LOOP
+// 6.       find its parent (by traversing until sibling tail node)
+// 7.       find first_node (parent's child)
+// 8.       find last_node (node before tail)
+// 9.       if word has siblings
+// 10.          if word is only node (first and last)
+// 11.              set parent's child to null
+// 12.          if word is first_node
+// 13.              set parent's child to word->sibling
+// 14.          else word is last_node (before tail)
+// 15.              set previous node's sibling to tail
+// 16.          delete word
+// 17.          leave, don't loop
+// 18.      else word has no siblings
+// 19.          delete word (the current char node)
+// 20.          set parent's child pointer to null
+// 21.          reset word to point to parent and repeat at LOOP with substring
+// 22.      END LOOP
+bool deleteWordFromTrie(char *word, int size, Node *trie) {
+    // 1. first get the word pointer by reusing findStr
+    Node *pWord = NULL;  // pointer to word to delete
+    findStr(word, pWord, trie->pChild);
+
+    if (pWord == NULL) {
+        cout << "OMG error! Word " << strReverse(word)
+            << " is not actually a word! Aborting delete!" << endl;
+        return false;
+    }
+
+    // 2. if word has children
+    if (pWord != NULL && pWord->pChild != NULL) {
+        // 3. mark word->is_word to false, and leave.
+        // no need to delete word because it has children and we need it.
+        // NOTE: the assumption here is that pWord should always have
+        // is_word to true if it has no children.
+        if (pWord->is_word == false) {
+            cout << "OMG error! Word ";
+            printWord(pWord);
+            cout << " is not actually a word! Aborting delete!" << endl;
+            return false;
+        }
+        cout << "Done deleting word " << endl;
+        // printWord(pWord);
+        pWord->is_word = false;
+
+    // 4. else word has no children
+    } else if (pWord != NULL && pWord->pChild == NULL) {
+        // 5. LOOP
+        while (true) {
+            // 6. now that pWord is set correctly get the parent node.
+            Node *pParent = pWord;
+            while (pParent->pSibling != NULL && pParent->pSibling->c != '-')
+                pParent = pParent->pSibling;
+            if (pParent != NULL
+                && pParent->pSibling != NULL
+                && pParent->pSibling->pChild != NULL) {
+                // set the parent pointer to be the tail node's child
+                pParent = pParent->pSibling->pChild;
+            } else {
+                cout << "error deleting word, cannot find parent node!" << endl;
+                return false;
+            }
+
+            // now that the parent is found, check if the pWord is the only node
+            // in the list (by checking if it's the first and last node).
+            // 7. find first node
+            Node *first_node = pParent->pChild;
+
+            // 8. find last node
+            Node *last_node = pWord;
+            while (last_node->pSibling != NULL && last_node->pSibling->c != '-')
+                last_node = last_node->pSibling;
+            // now last_node is set to the node before the tail node.
+
+            // 9.  if word has (non-tail) siblings
+            if (pWord->pSibling != NULL && pWord->pSibling->c != '-') {
+                // 10. if word is only node (first and last)
+                if (pWord == first_node && pWord == last_node) {
+                    // 11. set parent's child to null and delete tail node
+                    pParent->pChild = NULL;
+                    delete pWord->pSibling;
+                // 12. else if word is first_node
+                } else if (pWord == first_node) {
+                    // 13. set parent's child to word->sibling
+                    pParent->pChild = pWord->pSibling;
+                // 14. else word is last_node (before tail)
+                } else if (pWord == last_node) {
+                    // 15. set previous node's sibling to tail.
+                    // need to get previous node by walking from first_node
+                    // until we reach pWord.
+                    Node *pPrev = first_node;
+                    while (pPrev->pSibling != pWord) pPrev = pPrev->pSibling;
+                    // now that pPrev's sibling is pWord, set pPrev's sibling
+                    // to be the tail (pWord's sibling).
+                    pPrev->pSibling = pWord->pSibling;
+                }
+                cout << "Done deleting word " << endl;
+                // printWord(pWord);  // can't use this since pWord changed
+                // 16. delete word
+                delete pWord;
+                // 17. leave, don't loop
+                break;
+            // 18. else word has no siblings
+            } else {
+                // 19. delete word (the current char node) and tail
+                delete pWord->pSibling;
+                delete pWord;
+                // 20. set parent's child pointer to null
+                pParent->pChild = NULL;
+                // 21. reset word to point to parent and repeat at
+                // LOOP with substring shorter by 1 at the end.
+                pWord = pParent;
+                // adding a null terminator at the end shortens it by 1
+                word[--size] = '\0';
+            }
+        }   // 22. END LOOP
+    }
+
+    return true;  // successful delete
+}
 
 // walks back to the root node from the given node.
 // it does this by using the parent pointer in the sibling tail nodes.
