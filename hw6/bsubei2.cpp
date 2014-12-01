@@ -95,6 +95,9 @@ void runProgram() {
             // preemptively check whether we can print anymore words using pTemp
             Node *pTemp = pCursor;
             if (pCursor != NULL && !shiftCursorOnce(pSuffix, pTemp)) {
+                if (pSuffix == pCursor)
+                    printWord(pCursor);
+
                 cout << "No more words to print! Leaving..." << endl;
                     continue;
             }
