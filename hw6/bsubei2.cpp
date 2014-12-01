@@ -298,7 +298,7 @@ void findStr(char *suffix_string, Node* &pSuffix, Node *trie) {
                 if (DEBUG_MODE)
                     cout << "found suffix " << suffix_string << endl;
                 // set pSuffix to this node
-                pSuffix = trie;
+                pSuffix = pTemp;
             } else {
                 findStr(&suffix_string[1],
                         pSuffix,
