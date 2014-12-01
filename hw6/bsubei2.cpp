@@ -112,9 +112,33 @@ void runProgram() {
                 }
                 n--;
             }
-        }
+        // else if add command
+        } else if (command[0] == 'a') {
+            char *string_to_add = &command[2];
+            int size = strlen(string_to_add);
 
-        // TODO(basheersubei) else if add command
+            // reverse the word
+            strReverse(string_to_add);
+
+            // check if valid (all alphabetic chars)
+            for (int i = 0; i < size; i++) {
+                if (!isalpha(string_to_add[i])) {
+                    cout << "word " << strReverse(string_to_add)
+                        << " is not alphabetic and will be rejected!" << endl;
+                    continue;  // since word is not valid, abort
+                }
+            }  // end for (reads each char in the current word)
+
+            // convert to lowercase
+            for (int i = 0; i < size; i++)
+                string_to_add[i] = tolower(string_to_add[i]);
+            if (DEBUG_MODE)
+                cout << "storing word " << string_to_add << endl;
+
+            // TODO(basheersubei) handle duplicate entries
+            // add word in trie
+            storeWordInTrie(string_to_add, strlen(string_to_add), word_trie);
+        }
 
         // TODO(basheersubei) else if delete command
 
