@@ -81,19 +81,113 @@ TEST(StoreWordInTrieTest, Empty) {
     word_trie->pChild = NULL;
     word_trie->pSibling = NULL;
 
-    // now try adding a word
-    char str[6] = "gtest";
-    storeWordInTrie(str, 6, word_trie);
+    // now try adding a word (in reverse)
+    char word[6] = "gtest";
+    strReverse(word);
+    storeWordInTrie(word, strlen(word), word_trie);
 
     // first check if root is NULL (it never should be)
     EXPECT_FALSE(word_trie == NULL);
-    // then check if a child exists with letter 'g'
+    // then check if a child exists with letter 't'
     EXPECT_FALSE(word_trie->pChild == NULL);
-    EXPECT_EQ(word_trie->pChild->c, 'g');
+    EXPECT_EQ(word_trie->pChild->c, 't');
 
-    // finally, check that deleting the trie works
     deleteTrieWords(word_trie);
-    // actually, I don't think there's a way to test that.
+}
+
+// tests adding word node to non-empty trie
+TEST(StoreWordInTrieTest, OneWord) {
+    // first create an empty trie
+    Node *word_trie = new Node;  // root trie node
+    word_trie->c = ' ';  // empty space indicates root node
+    word_trie->is_word = false;
+    word_trie->pChild = NULL;
+    word_trie->pSibling = NULL;
+
+    // now try adding a word (in reverse)
+    char word[6] = "gtest";
+    strReverse(word);
+    storeWordInTrie(word, strlen(word), word_trie);
+
+    // first check if root is NULL (it never should be)
+    EXPECT_FALSE(word_trie == NULL);
+    // then check if a child exists with letter 't'
+    EXPECT_FALSE(word_trie->pChild == NULL);
+    EXPECT_EQ(word_trie->pChild->c, 't');
+
+    // now try adding another word (in reverse)
+    char word2[4] = "yes";
+    strReverse(word2);
+    storeWordInTrie(word2, strlen(word2), word_trie);
+
+    // first check if the node for 's' exists (first letter of yes reversed)
+    EXPECT_FALSE(word_trie->pChild->pSibling == NULL);
+
+    // then check if the word yes exists
+    EXPECT_FALSE(word_trie->pChild->pSibling == NULL);
+    Node *s_node = word_trie->pChild->pSibling;
+    EXPECT_EQ(s_node->c, 's');
+    EXPECT_EQ(s_node->pChild->c, 'e');
+    EXPECT_EQ(s_node->pChild->pChild->c, 'y');
+    EXPECT_TRUE(s_node->pChild->pChild->is_word);
+
+    deleteTrieWords(word_trie);
+}
+
+// adds a subword of an already-existing word and checks if they both exist
+TEST(StoreSubWordInTrieTest, OneWord) {
+    // first create an empty trie
+    Node *word_trie = new Node;  // root trie node
+    word_trie->c = ' ';  // empty space indicates root node
+    word_trie->is_word = false;
+    word_trie->pChild = NULL;
+    word_trie->pSibling = NULL;
+    // now try adding a word (in reverse)
+    char word[6] = "gtest";
+    strReverse(word);
+    storeWordInTrie(word, strlen(word), word_trie);
+
+    // now that we have a word, add a subword "test"
+    char sub_word[5] = "test";
+    strReverse(sub_word);
+    storeWordInTrie(sub_word, strlen(sub_word), word_trie);
+    // get a node pointer to the t (test is stored in reverse, so first t).
+    Node *t_node = word_trie->pChild->pChild->pChild->pChild;
+    EXPECT_EQ(t_node->c, 't');  // test that it's the correct letter
+    EXPECT_TRUE(t_node->is_word);  // test that it's marked as a word
+
+    // test that its child (the original word) is still a word
+    EXPECT_EQ(t_node->pChild->c, 'g');
+    EXPECT_TRUE(t_node->pChild->is_word);
+
+    deleteTrieWords(word_trie);
+}
+
+// adds a word that an already-existing word is a subword of
+TEST(StoreSuperWordInTrieTest, OneWord) {
+    // first create an empty trie
+    Node *word_trie = new Node;  // root trie node
+    word_trie->c = ' ';  // empty space indicates root node
+    word_trie->is_word = false;
+    word_trie->pChild = NULL;
+    word_trie->pSibling = NULL;
+    // now try adding a word (in reverse)
+    char sub_word[5] = "test";
+    strReverse(sub_word);
+    storeWordInTrie(sub_word, strlen(sub_word), word_trie);
+
+    // now that we have a subword, add a super_word "gtest"
+    char super_word[6] = "gtest";
+    strReverse(super_word);
+    storeWordInTrie(super_word, strlen(super_word), word_trie);
+    // get a node pointer to the t (test is stored in reverse, so first t).
+    Node *t_node = word_trie->pChild->pChild->pChild->pChild;
+    EXPECT_EQ(t_node->c, 't');  // test that it's the correct letter
+    EXPECT_TRUE(t_node->is_word);  // test that it's marked as a word
+    EXPECT_EQ(t_node->pChild->c, 'g');  // test that its child is still valid
+    EXPECT_TRUE(t_node->pChild->is_word);  // test that the superword is marked.
+
+    deleteTrieWords(word_trie);
 }
 
 // Step 3. Call RUN_ALL_TESTS() in main().
