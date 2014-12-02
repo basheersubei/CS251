@@ -112,7 +112,6 @@ void runProgram() {
                 }
                 n--;
             }
-        // TODO(basheersubei) this isn't working, test this
         // else if add command
         } else if (command[0] == 'a') {
             char *string_to_add = &command[2];
@@ -138,9 +137,7 @@ void runProgram() {
 
             // handles duplicate entries
             // add word in trie
-            // TODO(basheersubei) does not handle adding new subwords
             storeWordInTrie(string_to_add, strlen(string_to_add), word_trie);
-        // TODO(basheersubei) fix bug when deleting subword
         // else if delete command
         } else if (command[0] == 'd') {
             char *string_to_delete = &command[2];
@@ -170,6 +167,7 @@ void runProgram() {
             if (deleteWordFromTrie(string_to_delete,
                             strlen(string_to_delete),
                             word_trie)) {
+                // reset pCursor and pSuffix to root
                 pCursor = word_trie;
                 pSuffix = word_trie;
             }
@@ -231,6 +229,12 @@ bool deleteWordFromTrie(char *word, int size, Node *trie) {
         return false;
     }
 
+    // just in case bug-catcher?
+    if (size <= 0) {
+        cout << "OMG error! Size reached 0 while deleting!" << endl;
+        return false;
+    }
+
     // 2. if word has children
     if (pWord != NULL && pWord->pChild != NULL) {
         // 3. mark word->is_word to false, and leave.
@@ -246,11 +250,12 @@ bool deleteWordFromTrie(char *word, int size, Node *trie) {
         cout << "Done deleting word " << endl;
         // printWord(pWord);
         pWord->is_word = false;
+        // will leave function
 
     // 4. else word has no children
     } else if (pWord != NULL && pWord->pChild == NULL) {
         // 5. LOOP
-        while (true) {
+        do {
             // 6. now that pWord is set correctly get the parent node.
             Node *pParent = pWord;
             while (pParent->pSibling != NULL && pParent->pSibling->c != '-')
@@ -317,8 +322,11 @@ bool deleteWordFromTrie(char *word, int size, Node *trie) {
                 // adding a null terminator at the end shortens it by 1
                 word[--size] = '\0';
             }
-        }   // 22. END LOOP
-    }
+        } while (!pWord->is_word);  // 22. END LOOP
+        // the above loop keeps deleting nodes until it finds a word, in that
+        // case it leaves because this word is common with another and we don't
+        // want to remove it.
+    }  // end else no children
 
     return true;  // successful delete
 }
