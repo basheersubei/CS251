@@ -205,8 +205,6 @@ void runProgram() {
 // 7.       find first_node (parent's child)
 // 8.       find last_node (node before tail)
 // 9.       if word has siblings
-// 10.          if word is only node (first and last)
-// 11.              set parent's child to null
 // 12.          if word is first_node
 // 13.              set parent's child to word->sibling
 // 14.          else word is last_node (before tail)
@@ -282,14 +280,9 @@ bool deleteWordFromTrie(char *word, int size, Node *trie) {
             // now last_node is set to the node before the tail node.
 
             // 9.  if word has (non-tail) siblings
-            if (pWord->pSibling != NULL && pWord->pSibling->c != '-') {
-                // 10. if word is only node (first and last)
-                if (pWord == first_node && pWord == last_node) {
-                    // 11. set parent's child to null and delete tail node
-                    pParent->pChild = NULL;
-                    delete pWord->pSibling;
-                // 12. else if word is first_node
-                } else if (pWord == first_node) {
+            if (first_node != last_node) {
+                // 12. if word is first_node
+                if (pWord == first_node) {
                     // 13. set parent's child to word->sibling
                     pParent->pChild = pWord->pSibling;
                 // 14. else word is last_node (before tail)

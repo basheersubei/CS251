@@ -231,6 +231,7 @@ TEST(DeleteWordInTrieTest, Subword) {
     deleteTrieWords(word_trie);
 }
 
+// deletes a super word of an existing word
 TEST(DeleteWordInTrieTest, Superword) {
     // add a word and its subword
 
@@ -272,6 +273,94 @@ TEST(DeleteWordInTrieTest, Superword) {
     deleteTrieWords(word_trie);
 }
 
+// deletes a branch word of an existing word
+TEST(DeleteWordInTrieTest, Branchword) {
+    // add a word and its branchword
+
+    // first create an empty trie
+    Node *word_trie = new Node;  // root trie node
+    word_trie->c = ' ';  // empty space indicates root node
+    word_trie->is_word = false;
+    word_trie->pChild = NULL;
+    word_trie->pSibling = NULL;
+    // now try adding a word (in reverse)
+    char word[6] = "gtest";
+    strReverse(word);
+    storeWordInTrie(word, strlen(word), word_trie);
+
+    // now that we have a word, add a branchword "best"
+    char branch_word[5] = "best";
+    strReverse(branch_word);
+    storeWordInTrie(branch_word, strlen(branch_word), word_trie);
+    EXPECT_EQ(word_trie->pChild->c, 't');
+    EXPECT_EQ(word_trie->pChild->pChild->c, 's');
+    EXPECT_EQ(word_trie->pChild->pChild->pChild->c, 'e');
+    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->c, 't');
+    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->pSibling->c, 'b');
+    // check that 't' in test is not a word
+    EXPECT_FALSE(word_trie->pChild->pChild->pChild->pChild->is_word);
+    // check that 'b' is a word (best)
+    EXPECT_TRUE(word_trie->pChild->pChild->pChild->pChild->pSibling->is_word);
+    // check that 'g' exists and is a word (gtest)
+    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->pChild->c, 'g');
+    EXPECT_TRUE(word_trie->pChild->pChild->pChild->pChild->pChild->is_word);
+
+
+    // now remove the branchword and test if it's gone
+    // and the other word is there.
+    deleteWordFromTrie(branch_word, strlen(branch_word), word_trie);
+    EXPECT_EQ(word_trie->pChild->c, 't');
+    EXPECT_EQ(word_trie->pChild->pChild->c, 's');
+    EXPECT_EQ(word_trie->pChild->pChild->pChild->c, 'e');
+    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->c, 't');
+    // the only sibling to 't' is tail node (the 'b' is no longer there)
+    // 'b' no longer exists
+    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->pSibling->c, '-');
+    // check that 'g' still exists and is a word (gtest)
+    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->pChild->c, 'g');
+    EXPECT_TRUE(word_trie->pChild->pChild->pChild->pChild->pChild->is_word);
+    deleteTrieWords(word_trie);
+}
+
+// deletes a word that doesn't exist
+TEST(DeleteWordInTrieTest, Nonexistent) {
+    // add a word and its branchword
+
+    // first create an empty trie
+    Node *word_trie = new Node;  // root trie node
+    word_trie->c = ' ';  // empty space indicates root node
+    word_trie->is_word = false;
+    word_trie->pChild = NULL;
+    word_trie->pSibling = NULL;
+    // now try adding a word (in reverse)
+    char word[6] = "gtest";
+    strReverse(word);
+    storeWordInTrie(word, strlen(word), word_trie);
+
+    EXPECT_EQ(word_trie->pChild->c, 't');
+    EXPECT_EQ(word_trie->pChild->pChild->c, 's');
+    EXPECT_EQ(word_trie->pChild->pChild->pChild->c, 'e');
+    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->c, 't');
+    // check that 'g' exists and is a word (gtest)
+    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->pChild->c, 'g');
+    EXPECT_TRUE(word_trie->pChild->pChild->pChild->pChild->pChild->is_word);
+
+
+    // now remove try to remove a nonexistent word and test if gtest is gone.
+    char nonexistent[6] = "farts";
+    deleteWordFromTrie(nonexistent, strlen(nonexistent), word_trie);
+
+    // repeat old tests
+    EXPECT_EQ(word_trie->pChild->c, 't');
+    EXPECT_EQ(word_trie->pChild->pChild->c, 's');
+    EXPECT_EQ(word_trie->pChild->pChild->pChild->c, 'e');
+    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->c, 't');
+    // check that 'g' exists and is a word (gtest)
+    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->pChild->c, 'g');
+    EXPECT_TRUE(word_trie->pChild->pChild->pChild->pChild->pChild->is_word);
+
+    deleteTrieWords(word_trie);
+}
 // Step 3. Call RUN_ALL_TESTS() in main().
 //
 // We do this by linking in src/gtest_main.cc file, which consists of
