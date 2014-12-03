@@ -163,13 +163,13 @@ void runProgram() {
 
             // delete word from trie.
             // if successful, reset pCursor and pSuffix
-            // to root node.
+            // to NULL.
             if (deleteWordFromTrie(string_to_delete,
                             strlen(string_to_delete),
                             word_trie)) {
-                // reset pCursor and pSuffix to root
-                pCursor = word_trie;
-                pSuffix = word_trie;
+                // reset pCursor and pSuffix to NULL
+                pCursor = NULL;
+                pSuffix = NULL;
             }
 
         // else if help command
