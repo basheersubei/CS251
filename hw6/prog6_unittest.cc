@@ -96,7 +96,7 @@ TEST(StoreWordInTrieTest, Empty) {
 }
 
 // tests adding word node to non-empty trie
-TEST(StoreWordInTrieTest, OneWord) {
+TEST(StoreWordInTrieTest, Different) {
     // first create an empty trie
     Node *word_trie = new Node;  // root trie node
     word_trie->c = ' ';  // empty space indicates root node
@@ -135,7 +135,7 @@ TEST(StoreWordInTrieTest, OneWord) {
 }
 
 // adds a subword of an already-existing word and checks if they both exist
-TEST(StoreSubWordInTrieTest, OneWord) {
+TEST(StoreWordInTrieTest, Subword) {
     // first create an empty trie
     Node *word_trie = new Node;  // root trie node
     word_trie->c = ' ';  // empty space indicates root node
@@ -164,7 +164,7 @@ TEST(StoreSubWordInTrieTest, OneWord) {
 }
 
 // adds a word that an already-existing word is a subword of
-TEST(StoreSuperWordInTrieTest, OneWord) {
+TEST(StoreWordInTrieTest, Superword) {
     // first create an empty trie
     Node *word_trie = new Node;  // root trie node
     word_trie->c = ' ';  // empty space indicates root node
@@ -186,6 +186,88 @@ TEST(StoreSuperWordInTrieTest, OneWord) {
     EXPECT_TRUE(t_node->is_word);  // test that it's marked as a word
     EXPECT_EQ(t_node->pChild->c, 'g');  // test that its child is still valid
     EXPECT_TRUE(t_node->pChild->is_word);  // test that the superword is marked.
+
+    deleteTrieWords(word_trie);
+}
+
+TEST(DeleteWordInTrieTest, Subword) {
+    // add a word and its subword
+
+    // first create an empty trie
+    Node *word_trie = new Node;  // root trie node
+    word_trie->c = ' ';  // empty space indicates root node
+    word_trie->is_word = false;
+    word_trie->pChild = NULL;
+    word_trie->pSibling = NULL;
+    // now try adding a word (in reverse)
+    char word[6] = "gtest";
+    strReverse(word);
+    storeWordInTrie(word, strlen(word), word_trie);
+
+    // now that we have a word, add a subword "test"
+    char sub_word[5] = "test";
+    strReverse(sub_word);
+    storeWordInTrie(sub_word, strlen(sub_word), word_trie);
+    EXPECT_EQ(word_trie->pChild->c, 't');
+    EXPECT_EQ(word_trie->pChild->pChild->c, 's');
+    EXPECT_EQ(word_trie->pChild->pChild->pChild->c, 'e');
+    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->c, 't');
+    EXPECT_TRUE(word_trie->pChild->pChild->pChild->pChild->is_word);
+    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->pChild->c, 'g');
+    EXPECT_TRUE(word_trie->pChild->pChild->pChild->pChild->pChild->is_word);
+
+
+    // now remove the subword and test if it's gone and the other word is there.
+    deleteWordFromTrie(sub_word, strlen(sub_word), word_trie);
+    EXPECT_EQ(word_trie->pChild->c, 't');
+    EXPECT_EQ(word_trie->pChild->pChild->c, 's');
+    EXPECT_EQ(word_trie->pChild->pChild->pChild->c, 'e');
+    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->c, 't');
+    // this line is the only difference from above tests
+    EXPECT_FALSE(word_trie->pChild->pChild->pChild->pChild->is_word);
+    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->pChild->c, 'g');
+    EXPECT_TRUE(word_trie->pChild->pChild->pChild->pChild->pChild->is_word);
+
+    deleteTrieWords(word_trie);
+}
+
+TEST(DeleteWordInTrieTest, Superword) {
+    // add a word and its subword
+
+    // first create an empty trie
+    Node *word_trie = new Node;  // root trie node
+    word_trie->c = ' ';  // empty space indicates root node
+    word_trie->is_word = false;
+    word_trie->pChild = NULL;
+    word_trie->pSibling = NULL;
+    // now try adding a word (in reverse)
+    char super_word[6] = "gtest";
+    strReverse(super_word);
+    storeWordInTrie(super_word, strlen(super_word), word_trie);
+
+    // now that we have a word, add a subword "test"
+    char sub_word[5] = "test";
+    strReverse(sub_word);
+    storeWordInTrie(sub_word, strlen(sub_word), word_trie);
+    EXPECT_EQ(word_trie->pChild->c, 't');
+    EXPECT_EQ(word_trie->pChild->pChild->c, 's');
+    EXPECT_EQ(word_trie->pChild->pChild->pChild->c, 'e');
+    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->c, 't');
+    EXPECT_TRUE(word_trie->pChild->pChild->pChild->pChild->is_word);
+    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->pChild->c, 'g');
+    EXPECT_TRUE(word_trie->pChild->pChild->pChild->pChild->pChild->is_word);
+
+
+    // now remove the superword and test if it's gone
+    // and the other word is there.
+    deleteWordFromTrie(super_word, strlen(super_word), word_trie);
+    EXPECT_EQ(word_trie->pChild->c, 't');
+    EXPECT_EQ(word_trie->pChild->pChild->c, 's');
+    EXPECT_EQ(word_trie->pChild->pChild->pChild->c, 'e');
+    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->c, 't');
+    EXPECT_TRUE(word_trie->pChild->pChild->pChild->pChild->is_word);
+    // 'g' no longer exists
+    EXPECT_TRUE(word_trie->pChild->pChild->pChild->pChild->pChild == NULL);
 
     deleteTrieWords(word_trie);
 }
