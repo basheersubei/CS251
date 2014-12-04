@@ -7,6 +7,7 @@
 !lab*/*.*
 !.travis*
 !.travis/*
+!gtest*/*
 
 *.out
 *.eps
