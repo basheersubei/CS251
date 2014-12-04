@@ -77,7 +77,7 @@ void runProgram() {
             // else print success message
             } else {
                 cout << "Found " << suffix_string
-                << " in trie! Position cursor updated!" << endl;
+                << " reversed in trie! Position cursor updated!" << endl;
             }
             // else if print command
         } else if (command[0] == 'p') {
@@ -222,8 +222,8 @@ bool deleteWordFromTrie(char *word, int size, Node *trie) {
     findStr(word, pWord, trie->pChild);
 
     if (pWord == NULL) {
-        cout << "OMG error! Word " << strReverse(word)
-            << " is not actually a word! Aborting delete!" << endl;
+        cout << "OMG error! Could not find word " << strReverse(word)
+            << "! Aborting delete!" << endl;
         return false;
     }
 
@@ -285,8 +285,8 @@ bool deleteWordFromTrie(char *word, int size, Node *trie) {
                 if (pWord == first_node) {
                     // 13. set parent's child to word->sibling
                     pParent->pChild = pWord->pSibling;
-                // 14. else word is last_node (before tail)
-                } else if (pWord == last_node) {
+                // 14. else word is in middle or last_node (before tail)
+                } else {
                     // 15. set previous node's sibling to tail.
                     // need to get previous node by walking from first_node
                     // until we reach pWord.
