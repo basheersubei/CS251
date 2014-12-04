@@ -90,7 +90,7 @@ TEST(StoreWordInTrieTest, Empty) {
     EXPECT_FALSE(word_trie == NULL);
     // then check if a child exists with letter 't'
     EXPECT_FALSE(word_trie->pChild == NULL);
-    EXPECT_EQ(word_trie->pChild->c, 't');
+    EXPECT_EQ('t', word_trie->pChild->c);
 
     deleteTrieWords(word_trie);
 }
@@ -113,7 +113,7 @@ TEST(StoreWordInTrieTest, Different) {
     EXPECT_FALSE(word_trie == NULL);
     // then check if a child exists with letter 't'
     EXPECT_FALSE(word_trie->pChild == NULL);
-    EXPECT_EQ(word_trie->pChild->c, 't');
+    EXPECT_EQ('t', word_trie->pChild->c);
 
     // now try adding another word (in reverse)
     char word2[4] = "yes";
@@ -126,9 +126,9 @@ TEST(StoreWordInTrieTest, Different) {
     // then check if the word yes exists
     EXPECT_FALSE(word_trie->pChild->pSibling == NULL);
     Node *s_node = word_trie->pChild->pSibling;
-    EXPECT_EQ(s_node->c, 's');
-    EXPECT_EQ(s_node->pChild->c, 'e');
-    EXPECT_EQ(s_node->pChild->pChild->c, 'y');
+    EXPECT_EQ('s', s_node->c);
+    EXPECT_EQ('e', s_node->pChild->c);
+    EXPECT_EQ('y', s_node->pChild->pChild->c);
     EXPECT_TRUE(s_node->pChild->pChild->is_word);
 
     deleteTrieWords(word_trie);
@@ -153,11 +153,11 @@ TEST(StoreWordInTrieTest, Subword) {
     storeWordInTrie(sub_word, strlen(sub_word), word_trie);
     // get a node pointer to the t (test is stored in reverse, so first t).
     Node *t_node = word_trie->pChild->pChild->pChild->pChild;
-    EXPECT_EQ(t_node->c, 't');  // test that it's the correct letter
+    EXPECT_EQ('t', t_node->c);  // test that it's the correct letter
     EXPECT_TRUE(t_node->is_word);  // test that it's marked as a word
 
     // test that its child (the original word) is still a word
-    EXPECT_EQ(t_node->pChild->c, 'g');
+    EXPECT_EQ('g', t_node->pChild->c);
     EXPECT_TRUE(t_node->pChild->is_word);
 
     deleteTrieWords(word_trie);
@@ -182,9 +182,9 @@ TEST(StoreWordInTrieTest, Superword) {
     storeWordInTrie(super_word, strlen(super_word), word_trie);
     // get a node pointer to the t (test is stored in reverse, so first t).
     Node *t_node = word_trie->pChild->pChild->pChild->pChild;
-    EXPECT_EQ(t_node->c, 't');  // test that it's the correct letter
+    EXPECT_EQ('t', t_node->c);  // test that it's the correct letter
     EXPECT_TRUE(t_node->is_word);  // test that it's marked as a word
-    EXPECT_EQ(t_node->pChild->c, 'g');  // test that its child is still valid
+    EXPECT_EQ('g', t_node->pChild->c);  // test that its child is still valid
     EXPECT_TRUE(t_node->pChild->is_word);  // test that the superword is marked.
 
     deleteTrieWords(word_trie);
@@ -208,24 +208,24 @@ TEST(DeleteWordInTrieTest, Subword) {
     char sub_word[5] = "test";
     strReverse(sub_word);
     storeWordInTrie(sub_word, strlen(sub_word), word_trie);
-    EXPECT_EQ(word_trie->pChild->c, 't');
-    EXPECT_EQ(word_trie->pChild->pChild->c, 's');
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->c, 'e');
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->c, 't');
+    EXPECT_EQ('t', word_trie->pChild->c);
+    EXPECT_EQ('s', word_trie->pChild->pChild->c);
+    EXPECT_EQ('e', word_trie->pChild->pChild->pChild->c);
+    EXPECT_EQ('t', word_trie->pChild->pChild->pChild->pChild->c);
     EXPECT_TRUE(word_trie->pChild->pChild->pChild->pChild->is_word);
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->pChild->c, 'g');
+    EXPECT_EQ('g', word_trie->pChild->pChild->pChild->pChild->pChild->c);
     EXPECT_TRUE(word_trie->pChild->pChild->pChild->pChild->pChild->is_word);
 
 
     // now remove the subword and test if it's gone and the other word is there.
     deleteWordFromTrie(sub_word, strlen(sub_word), word_trie);
-    EXPECT_EQ(word_trie->pChild->c, 't');
-    EXPECT_EQ(word_trie->pChild->pChild->c, 's');
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->c, 'e');
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->c, 't');
+    EXPECT_EQ('t', word_trie->pChild->c);
+    EXPECT_EQ('s', word_trie->pChild->pChild->c);
+    EXPECT_EQ('e', word_trie->pChild->pChild->pChild->c);
+    EXPECT_EQ('t', word_trie->pChild->pChild->pChild->pChild->c);
     // this line is the only difference from above tests
     EXPECT_FALSE(word_trie->pChild->pChild->pChild->pChild->is_word);
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->pChild->c, 'g');
+    EXPECT_EQ('g', word_trie->pChild->pChild->pChild->pChild->pChild->c);
     EXPECT_TRUE(word_trie->pChild->pChild->pChild->pChild->pChild->is_word);
 
     deleteTrieWords(word_trie);
@@ -250,22 +250,22 @@ TEST(DeleteWordInTrieTest, Superword) {
     char sub_word[5] = "test";
     strReverse(sub_word);
     storeWordInTrie(sub_word, strlen(sub_word), word_trie);
-    EXPECT_EQ(word_trie->pChild->c, 't');
-    EXPECT_EQ(word_trie->pChild->pChild->c, 's');
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->c, 'e');
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->c, 't');
+    EXPECT_EQ('t', word_trie->pChild->c);
+    EXPECT_EQ('s', word_trie->pChild->pChild->c);
+    EXPECT_EQ('e', word_trie->pChild->pChild->pChild->c);
+    EXPECT_EQ('t', word_trie->pChild->pChild->pChild->pChild->c);
     EXPECT_TRUE(word_trie->pChild->pChild->pChild->pChild->is_word);
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->pChild->c, 'g');
+    EXPECT_EQ('g', word_trie->pChild->pChild->pChild->pChild->pChild->c);
     EXPECT_TRUE(word_trie->pChild->pChild->pChild->pChild->pChild->is_word);
 
 
     // now remove the superword and test if it's gone
     // and the other word is there.
     deleteWordFromTrie(super_word, strlen(super_word), word_trie);
-    EXPECT_EQ(word_trie->pChild->c, 't');
-    EXPECT_EQ(word_trie->pChild->pChild->c, 's');
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->c, 'e');
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->c, 't');
+    EXPECT_EQ('t', word_trie->pChild->c);
+    EXPECT_EQ('s', word_trie->pChild->pChild->c);
+    EXPECT_EQ('e', word_trie->pChild->pChild->pChild->c);
+    EXPECT_EQ('t', word_trie->pChild->pChild->pChild->pChild->c);
     EXPECT_TRUE(word_trie->pChild->pChild->pChild->pChild->is_word);
     // 'g' no longer exists
     EXPECT_TRUE(word_trie->pChild->pChild->pChild->pChild->pChild == NULL);
@@ -292,32 +292,32 @@ TEST(DeleteWordInTrieTest, Branchword) {
     char branch_word[5] = "best";
     strReverse(branch_word);
     storeWordInTrie(branch_word, strlen(branch_word), word_trie);
-    EXPECT_EQ(word_trie->pChild->c, 't');
-    EXPECT_EQ(word_trie->pChild->pChild->c, 's');
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->c, 'e');
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->c, 't');
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->pSibling->c, 'b');
+    EXPECT_EQ('t', word_trie->pChild->c);
+    EXPECT_EQ('s', word_trie->pChild->pChild->c);
+    EXPECT_EQ('e', word_trie->pChild->pChild->pChild->c);
+    EXPECT_EQ('t', word_trie->pChild->pChild->pChild->pChild->c);
+    EXPECT_EQ('b', word_trie->pChild->pChild->pChild->pChild->pSibling->c);
     // check that 't' in test is not a word
     EXPECT_FALSE(word_trie->pChild->pChild->pChild->pChild->is_word);
     // check that 'b' is a word (best)
     EXPECT_TRUE(word_trie->pChild->pChild->pChild->pChild->pSibling->is_word);
     // check that 'g' exists and is a word (gtest)
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->pChild->c, 'g');
+    EXPECT_EQ('g', word_trie->pChild->pChild->pChild->pChild->pChild->c);
     EXPECT_TRUE(word_trie->pChild->pChild->pChild->pChild->pChild->is_word);
 
 
     // now remove the branchword and test if it's gone
     // and the other word is there.
     deleteWordFromTrie(branch_word, strlen(branch_word), word_trie);
-    EXPECT_EQ(word_trie->pChild->c, 't');
-    EXPECT_EQ(word_trie->pChild->pChild->c, 's');
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->c, 'e');
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->c, 't');
+    EXPECT_EQ('t', word_trie->pChild->c);
+    EXPECT_EQ('s', word_trie->pChild->pChild->c);
+    EXPECT_EQ('e', word_trie->pChild->pChild->pChild->c);
+    EXPECT_EQ('t', word_trie->pChild->pChild->pChild->pChild->c);
     // the only sibling to 't' is tail node (the 'b' is no longer there)
     // 'b' no longer exists
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->pSibling->c, '-');
+    EXPECT_EQ('-', word_trie->pChild->pChild->pChild->pChild->pSibling->c);
     // check that 'g' still exists and is a word (gtest)
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->pChild->c, 'g');
+    EXPECT_EQ('g', word_trie->pChild->pChild->pChild->pChild->pChild->c);
     EXPECT_TRUE(word_trie->pChild->pChild->pChild->pChild->pChild->is_word);
     deleteTrieWords(word_trie);
 }
@@ -337,12 +337,12 @@ TEST(DeleteWordInTrieTest, Nonexistent) {
     strReverse(word);
     storeWordInTrie(word, strlen(word), word_trie);
 
-    EXPECT_EQ(word_trie->pChild->c, 't');
-    EXPECT_EQ(word_trie->pChild->pChild->c, 's');
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->c, 'e');
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->c, 't');
+    EXPECT_EQ('t', word_trie->pChild->c);
+    EXPECT_EQ('s', word_trie->pChild->pChild->c);
+    EXPECT_EQ('e', word_trie->pChild->pChild->pChild->c);
+    EXPECT_EQ('t', word_trie->pChild->pChild->pChild->pChild->c);
     // check that 'g' exists and is a word (gtest)
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->pChild->c, 'g');
+    EXPECT_EQ('g', word_trie->pChild->pChild->pChild->pChild->pChild->c);
     EXPECT_TRUE(word_trie->pChild->pChild->pChild->pChild->pChild->is_word);
 
 
@@ -351,12 +351,12 @@ TEST(DeleteWordInTrieTest, Nonexistent) {
     deleteWordFromTrie(nonexistent, strlen(nonexistent), word_trie);
 
     // repeat old tests
-    EXPECT_EQ(word_trie->pChild->c, 't');
-    EXPECT_EQ(word_trie->pChild->pChild->c, 's');
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->c, 'e');
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->c, 't');
+    EXPECT_EQ('t', word_trie->pChild->c);
+    EXPECT_EQ('s', word_trie->pChild->pChild->c);
+    EXPECT_EQ('e', word_trie->pChild->pChild->pChild->c);
+    EXPECT_EQ('t', word_trie->pChild->pChild->pChild->pChild->c);
     // check that 'g' exists and is a word (gtest)
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->pChild->c, 'g');
+    EXPECT_EQ('g', word_trie->pChild->pChild->pChild->pChild->pChild->c);
     EXPECT_TRUE(word_trie->pChild->pChild->pChild->pChild->pChild->is_word);
 
     deleteTrieWords(word_trie);
@@ -377,12 +377,12 @@ TEST(DeleteWordInTrieTest, Different) {
     strReverse(word);
     storeWordInTrie(word, strlen(word), word_trie);
 
-    EXPECT_EQ(word_trie->pChild->c, 't');
-    EXPECT_EQ(word_trie->pChild->pChild->c, 's');
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->c, 'e');
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->c, 't');
+    EXPECT_EQ('t', word_trie->pChild->c);
+    EXPECT_EQ('s', word_trie->pChild->pChild->c);
+    EXPECT_EQ('e', word_trie->pChild->pChild->pChild->c);
+    EXPECT_EQ('t', word_trie->pChild->pChild->pChild->pChild->c);
     // check that 'g' exists and is a word (gtest)
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->pChild->c, 'g');
+    EXPECT_EQ('g', word_trie->pChild->pChild->pChild->pChild->pChild->c);
     EXPECT_TRUE(word_trie->pChild->pChild->pChild->pChild->pChild->is_word);
 
 
@@ -392,12 +392,12 @@ TEST(DeleteWordInTrieTest, Different) {
     storeWordInTrie(different, strlen(different), word_trie);
 
     // check if it's there
-    EXPECT_EQ(word_trie->pChild->pSibling->c, 's');
-    EXPECT_EQ(word_trie->pChild->pSibling->pChild->c, 't');
-    EXPECT_EQ(word_trie->pChild->pSibling->pChild->pChild->c, 'r');
-    EXPECT_EQ(word_trie->pChild->pSibling->pChild->pChild->pChild->c, 'a');
-    EXPECT_EQ(word_trie->pChild->pSibling->pChild->pChild->pChild->pChild->c
-        , 'f');
+    EXPECT_EQ('s', word_trie->pChild->pSibling->c);
+    EXPECT_EQ('t', word_trie->pChild->pSibling->pChild->c);
+    EXPECT_EQ('r', word_trie->pChild->pSibling->pChild->pChild->c);
+    EXPECT_EQ('a', word_trie->pChild->pSibling->pChild->pChild->pChild->c);
+    EXPECT_EQ('f',
+        word_trie->pChild->pSibling->pChild->pChild->pChild->pChild->c);
     EXPECT_TRUE(
         word_trie->pChild->pSibling->pChild->pChild->pChild->pChild->is_word);
 
@@ -405,16 +405,16 @@ TEST(DeleteWordInTrieTest, Different) {
     deleteWordFromTrie(different, strlen(different), word_trie);
 
     // check that word is no longer there
-    EXPECT_EQ(word_trie->pChild->pSibling->c, '-');
+    EXPECT_EQ('-', word_trie->pChild->pSibling->c);
     EXPECT_TRUE(word_trie->pChild->pSibling->pSibling == NULL);
 
     // just in case, make sure the original word is there
-    EXPECT_EQ(word_trie->pChild->c, 't');
-    EXPECT_EQ(word_trie->pChild->pChild->c, 's');
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->c, 'e');
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->c, 't');
+    EXPECT_EQ('t', word_trie->pChild->c);
+    EXPECT_EQ('s', word_trie->pChild->pChild->c);
+    EXPECT_EQ('e', word_trie->pChild->pChild->pChild->c);
+    EXPECT_EQ('t', word_trie->pChild->pChild->pChild->pChild->c);
     // check that 'g' exists and is a word (gtest)
-    EXPECT_EQ(word_trie->pChild->pChild->pChild->pChild->pChild->c, 'g');
+    EXPECT_EQ('g', word_trie->pChild->pChild->pChild->pChild->pChild->c);
     EXPECT_TRUE(word_trie->pChild->pChild->pChild->pChild->pChild->is_word);
 
     deleteTrieWords(word_trie);
