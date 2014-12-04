@@ -4,3 +4,6 @@ g++ hw2/bsubei2.cpp
 g++ hw3/bsubei2.cpp
 g++ hw4/bsubei2.cpp
 g++ hw5/bsubei2.cpp
+
+# TODO(basheersubei) add gtests to travis build
+g++ hw6/bsubei2.cpp
