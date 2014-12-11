@@ -9,4 +9,4 @@ language: cpp
 compiler:
 - g++
 after_success:
-  - coveralls --root $PWD/hw6 --build-root $PWD/hw6
+  - coveralls --root $PWD/hw6 --build-root $PWD/hw6 --exclude prog6_unittest.cc
