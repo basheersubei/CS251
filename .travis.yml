@@ -1,7 +1,12 @@
 notifications:
   email:
   - basheersubei@gmail.com
+before_install:
+  - sudo pip install cpp-coveralls
+  - sudo pip install pyyaml
 script: ./.travis/build
 language: cpp
 compiler:
 - g++
+after_success:
+  - coveralls --root $PWD/hw6 --build-root $PWD/hw6

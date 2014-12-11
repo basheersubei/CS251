@@ -25,7 +25,7 @@ USER_DIR = ./
 CPPFLAGS += -isystem $(GTEST_DIR)/include
 
 # Flags passed to the C++ compiler.
-CXXFLAGS += -g -Wall -Wextra -pthread
+CXXFLAGS += -g -fprofile-arcs -ftest-coverage -Wall -Wextra -pthread
 
 # All tests produced by this Makefile.  Remember to add new tests you
 # created to the list.
@@ -72,7 +72,7 @@ gtest_main.a : gtest-all.o gtest_main.o
 # function.
 
 bsubei2.o :	$(USER_DIR)/bsubei2.cpp $(USER_DIR)/bsubei2.h
-	g++ -c -o $(USER_DIR)/bsubei2.o $(USER_DIR)/bsubei2.cpp
+	g++ -fprofile-arcs -ftest-coverage -c -o $(USER_DIR)/bsubei2.o $(USER_DIR)/bsubei2.cpp
 
 prog6_unittest.o : $(USER_DIR)/prog6_unittest.cc \
                      $(GTEST_HEADERS)
