@@ -1,6 +1,6 @@
 CS251
 =====
-Code written for Professor [Reed's](https://sites.google.com/site/dalereed/) CS 251 class (data structures) for Fall 2014 at UIC.
+Code written for Professor Reed's [CS 251 class (data structures)](https://sites.google.com/site/cs251fall2014/) for Fall 2014 at UIC.
 
 Some stuff about linked lists, trees, tries, and graphs. Nothing fancy (very ugly hackety C/C++ code). You may use this code freely (at your own risk).
 
